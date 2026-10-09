@@ -8,14 +8,15 @@ The static browser demo and synthetic functional tests are research/educational 
 
 ## Contents
 
-- `prototype/`: static prototype reviewed by the manuscript, including a one-line correction so a reported visibility value of zero is handled as low quality
-- `reproducibility/`: Google Colab notebook, synthetic fixtures, and deterministic test harness
-- `SOURCE_MANIFEST_SHA256.txt`: file hashes for the prototype snapshot
+- `prototype/index.html`: static prototype reviewed by the manuscript, including a one-line correction so a reported visibility value of zero is handled as low quality
+- `PoseFit-Rehab-v0.1.1.zip`: complete version-fixed source archive containing `prototype/`, `reproducibility/`, the deterministic test harness, and release metadata
+- `SOURCE_MANIFEST_SHA256.txt`: file hashes for the prototype snapshot inside the version-fixed archive
 
 ## Reproduce the functional checks
 
 ```bash
-cd reproducibility
+unzip PoseFit-Rehab-v0.1.1.zip
+cd PoseFit-Rehab-public-v0.1.1/reproducibility
 python3 run_functional_verification.py
 ```
 
