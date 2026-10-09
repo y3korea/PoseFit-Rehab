@@ -1,0 +1,3 @@
+75e7f02ae71a5511734377bfdbb93a369c3bbfc1b30d1e7edc1ef9c31d872b45  prototype/README.md
+80612ac0bb2046e23f81717c013ccd2d2f7d443da4ee69e5fe7185ad5770e2bb  prototype/index.html
+790ed30ab1258ed8f96543ee82d1c8a73c691b4b18a32cf1ed5912b4ada26d69  prototype/vercel.json
