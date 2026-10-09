@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PoseFit Rehab v2 — clinician-directed, guardrail-verified, agentic AI rehabilitation. CES 2028. 医生处方 · 安全门校验 · 多智能体教练。">
+<title>PoseFit Rehab v2 · 의료진이 처방하고, 안전 게이트가 검증하는 에이전틱 재활 AI · CES 2028</title>
+<style>
+/* ============ 디자인 토큰 ============ */
+:root{
+  --bg:#FAF7F1; --surface:#FFFFFF; --surface-2:#F2EDE5;
+  --ink:#16272B; --ink-2:#2C4045; --muted:#58696E; --muted-2:#7E8E92;
+  --teal:#0C5C68; --teal-2:#09454F; --teal-soft:#DFEEF0; --teal-line:#C2DDE0;
+  --gold:#B8860B; --gold-soft:#FBF3DC; --gold-line:#EBD9A4;
+  --green:#2E7D32; --green-bg:#E7F4E8; --green-line:#BFE3C2;
+  --amber:#9A5E00; --amber-bg:#FFF3DC; --amber-line:#F0D9A8;
+  --red:#C62828; --red-bg:#FCEBEB; --red-line:#F0C2C2;
+  --violet:#5B3FA8; --violet-bg:#F1EDFB; --violet-line:#DDD4F2;
+  --line:#E6DFD2; --line-2:#D6CEBE;
+  --radius:18px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(22,39,43,.05),0 10px 34px rgba(22,39,43,.07);
+  --shadow-lg:0 2px 8px rgba(22,39,43,.08),0 30px 70px rgba(22,39,43,.16);
+  --maxw:1180px;
+  --fs:18px; --fs-sm:15px; --fs-xs:13px; --fs-h1:clamp(2.05rem,4.8vw,3.3rem);
+  --lh:1.6;
+  --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,"Cascadia Mono",monospace;
+  --cjk:"Apple SD Gothic Neo","Noto Sans KR","PingFang SC","Microsoft YaHei","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0E1617; --surface:#152123; --surface-2:#1A282B;
+  --ink:#ECF2F3; --ink-2:#C9D7DA; --muted:#94A6AA; --muted-2:#7A8C90;
+  --teal:#5CC7D3; --teal-2:#82D8E2; --teal-soft:#102F34; --teal-line:#1D444B;
+  --gold:#E6BE63; --gold-soft:#2A2110; --gold-line:#4A3A18;
+  --green:#7AD286; --green-bg:#12271A; --green-line:#1F4229;
+  --amber:#E7B45C; --amber-bg:#2A2110; --amber-line:#4A3A18;
+  --red:#F08A8A; --red-bg:#2C1515; --red-line:#4A2121;
+  --violet:#B9A7F0; --violet-bg:#1E1830; --violet-line:#372C55;
+  --line:#223335; --line-2:#2E4044;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 34px rgba(0,0,0,.35);
+  --shadow-lg:0 2px 8px rgba(0,0,0,.4),0 30px 70px rgba(0,0,0,.5);
+}
+html.easy-view{
+  --fs:22px; --fs-sm:19px; --fs-xs:16px; --fs-h1:clamp(2.2rem,5vw,3.4rem);
+  --ink:#0A1619; --muted:#2E4044; --line:#B9AE9F; --line-2:#A79B8A;
+}
+html.easy-view[data-theme="dark"]{ --ink:#FFFFFF; --muted:#D7E3E5; --line:#3A4D51; --line-2:#4A5F63; }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:96px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;font-family:var(--cjk);background:var(--bg);color:var(--ink);font-size:var(--fs);line-height:var(--lh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+img,canvas,video{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+::selection{background:var(--teal);color:#fff}
+
+/* ============ 고정 고지 ============ */
+.disclaimer{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--ink);color:var(--bg);font-size:var(--fs-xs);line-height:1.45;padding:7px 16px;text-align:center}
+.disclaimer b{color:#fff}
+
+/* ============ 헤더 ============ */
+header{position:sticky;top:0;z-index:90;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+html.easy-view header{background:var(--surface)}
+.navwrap{max-width:var(--maxw);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05em;color:var(--ink);white-space:nowrap}
+.logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--teal-2));color:#fff;display:grid;place-items:center;font-weight:900;flex:none}
+.logo small{font-weight:500;color:var(--muted);font-size:.72em;display:block;line-height:1.1}
+nav{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+nav a{padding:8px 10px;border-radius:9px;color:var(--ink-2);font-size:var(--fs-sm);font-weight:600}
+nav a:hover{background:var(--teal-soft);color:var(--teal-2);text-decoration:none}
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.lang{display:flex;gap:2px;border:1px solid var(--line-2);border-radius:9px;padding:2px;background:var(--surface)}
+.lang button{border:0;background:transparent;color:var(--muted);padding:6px 10px;border-radius:7px;font-size:var(--fs-xs);font-weight:700}
+.lang button.on{background:var(--teal);color:#fff}
+.toolbtn{border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);padding:8px 12px;border-radius:9px;font-size:var(--fs-sm);font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.toolbtn:hover{background:var(--surface-2);border-color:var(--teal)}
+.toolbtn[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* ============ 레이아웃 ============ */
+section{padding:76px 20px}
+.wrap{max-width:var(--maxw);margin:0 auto}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--teal)}
+.kicker::before{content:"";width:22px;height:2px;background:var(--teal);border-radius:2px}
+.kicker.gold{color:var(--gold)} .kicker.gold::before{background:var(--gold)}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-.02em;font-weight:800}
+h2{font-size:clamp(1.6rem,3.3vw,2.4rem)}
+.lead{color:var(--muted);font-size:1.1em;max-width:64ch;margin:14px 0 0}
+.en{font-family:var(--mono);font-size:.8em;color:var(--muted-2);letter-spacing:.02em}
+
+/* ============ 배지 ============ */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:var(--fs-xs);font-weight:700;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2)}
+.badge.sim{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-line)}
+.badge.peer{background:var(--green-bg);color:var(--green);border-color:var(--green-line)}
+.badge.phase2{background:var(--teal-soft);color:var(--teal-2);border-color:var(--teal-line)}
+.badge.gold{background:var(--gold-soft);color:var(--gold);border-color:var(--gold-line)}
+.badge.block{background:var(--red-bg);color:var(--red);border-color:var(--red-line)}
+
+/* ============ 히어로 ============ */
+.hero{position:relative;overflow:hidden;padding:100px 20px 92px;background:radial-gradient(960px 500px at 88% -12%,var(--teal-soft) 0%,transparent 58%),radial-gradient(760px 460px at -12% 112%,var(--gold-soft) 0%,transparent 55%),var(--bg)}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.25;mask-image:radial-gradient(700px 460px at 60% 20%,#000,transparent);pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.hero .ces{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--gold-line);color:var(--gold);padding:9px 16px;border-radius:999px;font-weight:800;font-size:var(--fs-sm);box-shadow:var(--shadow);margin-bottom:22px}
+.hero .ces .star{font-size:1.05em;line-height:1}
+.hero h1{max-width:21ch;font-size:var(--fs-h1)}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero .sub{font-size:1.24em;color:var(--ink-2);margin:18px 0 6px;max-width:50ch;font-weight:600}
+.hero .en{margin:0 0 26px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 34px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:12px;font-size:1em;font-weight:800;cursor:pointer;border:1px solid transparent;transition:transform .15s ease,box-shadow .15s ease,background .15s ease;text-decoration:none}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn.primary{background:var(--teal);color:#fff;box-shadow:0 6px 18px rgba(12,92,104,.28)}
+.btn.primary:hover{background:var(--teal-2)}
+.btn.ghost{background:var(--surface);color:var(--ink-2);border-color:var(--line-2)}
+.btn.ghost:hover{border-color:var(--teal);color:var(--teal-2)}
+html.easy-view .btn{padding:18px 26px;font-size:1.05em;min-height:64px}
+
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:38px}
+.loop .step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;position:relative;box-shadow:var(--shadow)}
+.loop .step .n{position:absolute;top:12px;right:14px;font-family:var(--mono);font-size:var(--fs-xs);color:var(--muted-2);font-weight:700}
+.loop .step .ic{font-size:1.5em;line-height:1}
+.loop .step h3{font-size:1.02em;margin:10px 0 4px}
+.loop .step p{margin:0;font-size:var(--fs-sm);color:var(--muted)}
+.loop .step b{color:var(--teal)}
+.loop .step::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--teal);font-weight:900;font-size:1.1em;z-index:3}
+.loop .step:last-child::after{content:"↻";right:-16px}
+@media(max-width:860px){.loop{grid-template-columns:1fr 1fr}.loop .step::after{display:none}}
+@media(max-width:520px){.loop{grid-template-columns:1fr}}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow)}
+.stat .v{font-size:1.5em;font-weight:900;color:var(--teal);letter-spacing:-.02em}
+.stat .k{font-size:var(--fs-sm);color:var(--muted);margin-top:2px}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+
+/* ============ 그리드/카드 ============ */
+.grid{display:grid;gap:16px;margin-top:34px}
+.grid.cards{grid-template-columns:repeat(2,1fr)}
+.grid.cols3{grid-template-columns:repeat(3,1fr)}
+.grid.cols4{grid-template-columns:repeat(4,1fr)}
+.grid.cols5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:1000px){.grid.cols5{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){.grid.cards,.grid.cols3,.grid.cols4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid.cards,.grid.cols3,.grid.cols4,.grid.cols5{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.card h3{font-size:1.08em;margin-bottom:6px}
+.card p{color:var(--muted);font-size:var(--fs-sm);margin:6px 0 0}
+.card .big{font-size:2rem;font-weight:900;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.card .unit{font-size:.9rem;color:var(--muted-2);font-weight:600}
+
+/* ============ 어워드 ============ */
+.awards{background:linear-gradient(180deg,var(--ink) 0%,var(--ink-2) 100%);color:var(--bg);border-top:1px solid #000}
+.awards .kicker,.awards .kicker::before{color:#E6BE63}
+.awards h2{color:#fff}
+.awards .lead{color:#B7C7CA}
+.award{position:relative;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border-top:4px solid var(--gold);display:flex;flex-direction:column;gap:8px}
+.award .cat{font-family:var(--mono);font-size:var(--fs-xs);font-weight:800;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+.award .ic{font-size:1.9em;line-height:1}
+.award h3{font-size:1.05em}
+.award p{color:var(--muted);font-size:var(--fs-sm);margin:0}
+.award .pillar{margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);font-size:var(--fs-xs);color:var(--teal-2);font-weight:800}
+
+/* ============ 문제/증거 ============ */
+.problem{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.problem .tag{margin:4px 6px 0 0}
+
+/* ============ 혁신 ============ */
+.innovation .pill{display:flex;gap:16px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.innovation .pill .idx{flex:none;width:44px;height:44px;border-radius:12px;background:var(--teal-soft);color:var(--teal-2);display:grid;place-items:center;font-weight:900;font-family:var(--mono)}
+.innovation .pill h3{font-size:1.1em;margin:0 0 4px}
+.innovation .pill p{color:var(--muted);font-size:var(--fs-sm);margin:0}
+.innovation .pill .honest{margin-top:10px;padding:10px 12px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:var(--fs-xs);color:var(--muted-2);border:1px dashed var(--line-2)}
+.innovation .pill .honest b{color:var(--amber)}
+
+/* ============ 에이전트 ============ */
+.agents{background:var(--ink);color:var(--bg);border-top:1px solid #000}
+.agents .kicker,.agents .kicker::before{color:#7ED6E1}
+.agents h2{color:#fff}
+.agents .lead{color:#B7C7CA}
+.agent{position:relative;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.agent .head{display:flex;align-items:center;justify-content:space-between}
+.agent .ic{font-size:1.8em;line-height:1}
+.agent .tag{font-size:var(--fs-xs);font-weight:800;padding:2px 9px;border-radius:7px;border:1px solid;white-space:nowrap}
+.agent .tag.llm{color:var(--violet);background:var(--violet-bg);border-color:var(--violet-line)}
+.agent .tag.det{color:var(--green);background:var(--green-bg);border-color:var(--green-line)}
+.agent .tag.human{color:var(--gold);background:var(--gold-soft);border-color:var(--gold-line)}
+.agent .tag.mix{color:var(--teal-2);background:var(--teal-soft);border-color:var(--teal-line)}
+.agent h3{font-size:1.04em;margin:4px 0 6px}
+.agent p{color:var(--muted);font-size:var(--fs-sm);margin:0}
+.agent .role{margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);font-size:var(--fs-xs);font-weight:800;color:var(--muted-2)}
+.agent.det{border-top:4px solid var(--green)}
+.agent .starbadge{position:absolute;top:12px;left:12px}
+
+/* ============ 모듈 ============ */
+.module{position:relative;overflow:hidden}
+.module .ribbon{position:absolute;top:14px;right:14px;font-size:var(--fs-xs);font-weight:800;padding:3px 10px;border-radius:999px;background:var(--teal-soft);color:var(--teal-2)}
+.module .num{font-family:var(--mono);color:var(--teal);font-weight:800;font-size:var(--fs-sm)}
+.module h3{margin:8px 0 6px}
+.module .why{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:var(--fs-xs);color:var(--muted-2)}
+
+/* ============ 데모 ============ */
+.demo{background:var(--ink);color:var(--bg);border-top:1px solid #000}
+.demo .kicker,.demo .kicker::before{color:#7ED6E1}
+.demo h2{color:#fff}
+.demo .lead{color:#B7C7CA}
+.demo-stage{margin-top:30px;display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
+@media(max-width:900px){.demo-stage{grid-template-columns:1fr}}
+.cam{position:relative;background:#000;border-radius:var(--radius);overflow:hidden;aspect-ratio:16/10;box-shadow:var(--shadow-lg);border:1px solid #233}
+#webcam{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#overlay{position:absolute;inset:0;width:100%;height:100%}
+.cam .hint{position:absolute;top:14px;left:14px;background:rgba(0,0,0,.55);color:#fff;padding:6px 12px;border-radius:999px;font-size:var(--fs-xs);font-weight:700;backdrop-filter:blur(4px)}
+.feedback{position:absolute;left:16px;right:16px;bottom:16px;text-align:center;padding:16px 18px;border-radius:12px;font-weight:800;font-size:1.12em;transition:background .2s ease,color .2s ease;pointer-events:none}
+.feedback.ok{background:rgba(30,58,32,.92);color:#A9E4B0;border:1px solid #3D7A43}
+.feedback.warn{background:rgba(74,42,6,.94);color:#FFD98A;border:1px solid #8A6320}
+.feedback.block{background:rgba(72,20,20,.95);color:#FFB3B3;border:1px solid #A33}
+.feedback.idle{background:rgba(10,20,22,.88);color:#EAF1F2;border:1px solid #2E4044}
+.demo-panel{background:var(--surface);color:var(--ink);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric{background:var(--surface-2);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.metric .v{font-size:1.6rem;font-weight:900;color:var(--teal-2);letter-spacing:-.02em}
+.metric .k{font-size:var(--fs-xs);color:var(--muted);font-weight:700;margin-top:2px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls .btn{flex:1;justify-content:center;min-width:0;padding:12px 14px;font-size:var(--fs-sm)}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:0}
+.gatebox{border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden}
+.gatebox .gh{padding:10px 14px;background:var(--surface-2);font-weight:800;font-size:var(--fs-sm);display:flex;align-items:center;gap:8px}
+.gatebox .gh .dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex:none}
+.gatebox .gh .dot.warn{background:var(--amber)}
+.gatebox .gh .dot.block{background:var(--red)}
+.rules{list-style:none;margin:0;padding:6px 0}
+.rules li{padding:9px 14px;font-size:var(--fs-sm);display:flex;gap:9px;align-items:flex-start;border-top:1px solid var(--line)}
+.rules li:first-child{border-top:none}
+.rules .st{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--line-2)}
+.rules li.fire .st{background:var(--red);box-shadow:0 0 0 4px var(--red-bg)}
+.rules li.ok .st{background:var(--green)}
+.rules .code{font-family:var(--mono);font-size:var(--fs-xs);color:var(--teal-2);font-weight:700}
+.netpanel{border:1px dashed var(--line-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:var(--fs-xs);color:var(--muted)}
+.netpanel .row{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.netpanel .row b{color:var(--ink-2)}
+.netpanel .on{color:var(--green);font-weight:800}
+.demo-note{font-size:var(--fs-xs);color:var(--muted-2);margin-top:12px}
+
+/* ============ 하네스 ============ */
+.harness{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.hmetric{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);text-align:center}
+.hmetric .ic{font-size:1.6em;line-height:1}
+.hmetric .v{font-size:1.35em;font-weight:900;color:var(--teal);margin:8px 0 2px;letter-spacing:-.01em}
+.hmetric .k{font-size:var(--fs-xs);color:var(--muted);font-weight:700}
+.hmetric .d{font-size:var(--fs-xs);color:var(--muted-2);margin-top:6px}
+.hopen{margin-top:22px;padding:18px 20px;background:var(--surface);border:1px dashed var(--teal-line);border-radius:var(--radius);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.hopen .ic{font-size:1.7em;line-height:1}
+.hopen b{color:var(--teal-2)}
+.hopen p{margin:0;font-size:var(--fs-sm);color:var(--muted)}
+
+/* ============ 표 ============ */
+.tablewrap{overflow-x:auto;margin-top:30px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:var(--fs-sm);min-width:780px}
+th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--surface-2);font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);position:sticky;top:0}
+tr:last-child td{border-bottom:none}
+td b{color:var(--ink)}
+.ours{background:var(--teal-soft)}
+.ours td{color:var(--teal-2)}
+.ours td b{color:var(--teal-2)}
+.tag-row{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:6px;font-size:var(--fs-xs);font-weight:700;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+
+/* ============ 스펙 ============ */
+.specgrid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:30px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.specrow{display:flex;justify-content:space-between;gap:16px;padding:13px 18px;border-bottom:1px solid var(--line);font-size:var(--fs-sm)}
+.specrow:nth-child(even){background:var(--surface-2)}
+.specrow .k{color:var(--muted);font-weight:700}
+.specrow .v{color:var(--ink);font-weight:800;text-align:right}
+@media(max-width:720px){.specgrid{grid-template-columns:1fr}}
+
+/* ============ 로드맵 ============ */
+.timeline{margin-top:34px;display:flex;flex-direction:column}
+.tl{border-left:3px solid var(--teal-line);margin-left:8px;padding:0 0 30px 26px;position:relative}
+.tl:last-child{padding-bottom:0}
+.tl::before{content:"";position:absolute;left:-9px;top:4px;width:15px;height:15px;border-radius:50%;background:var(--teal);border:3px solid var(--bg)}
+.tl.ces::before{background:var(--gold);border-color:var(--gold-soft)}
+.tl h3{font-size:1.08em}
+.tl .when{font-family:var(--mono);font-size:var(--fs-xs);color:var(--teal);font-weight:800;letter-spacing:.02em}
+.tl.ces .when{color:var(--gold)}
+.tl p{color:var(--muted);font-size:var(--fs-sm);margin:6px 0 0;max-width:64ch}
+
+/* ============ 푸터 ============ */
+footer{background:var(--surface-2);border-top:1px solid var(--line);padding:56px 20px 40px}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;margin-bottom:28px}
+@media(max-width:720px){footer .cols{grid-template-columns:1fr}}
+footer h4{margin:0 0 8px;font-size:1em}
+footer .disc{font-size:var(--fs-sm);color:var(--muted);padding:16px;border:1px solid var(--amber-line);background:var(--amber-bg);border-radius:var(--radius-sm)}
+.sources{font-size:var(--fs-xs);color:var(--muted-2)}
+.sources a{color:var(--muted)}
+.sources li{margin:4px 0}
+footer .legal{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:var(--fs-xs);color:var(--muted-2)}
+
+.human-btn{position:fixed;right:18px;bottom:18px;z-index:80;display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;padding:13px 18px;border-radius:999px;font-weight:800;box-shadow:0 8px 24px rgba(46,125,50,.35);font-size:var(--fs-sm);text-decoration:none}
+.human-btn:hover{text-decoration:none;transform:translateY(-1px)}
+
+@media(max-width:560px){section{padding:52px 16px}.navwrap{padding:10px 14px}nav a{padding:7px 9px;font-size:var(--fs-xs)}}
+</style>
+</head>
+<body>
+
+<div class="disclaimer" role="note" data-i18n-html="disclaimer"></div>
+
+<header>
+  <div class="navwrap">
+    <a class="logo" href="#top" aria-label="PoseFit Rehab home">
+      <span class="mark">P</span>
+      <span>PoseFit Rehab <small data-i18n="logo.sub"></small></span>
+    </a>
+    <nav aria-label="main">
+      <a href="#problem" data-i18n="nav.problem"></a>
+      <a href="#innovation" data-i18n="nav.innovation"></a>
+      <a href="#how" data-i18n="nav.how"></a>
+      <a href="#agents" data-i18n="nav.agents"></a>
+      <a href="#demo" data-i18n="nav.demo"></a>
+      <a href="#evidence" data-i18n="nav.evidence"></a>
+      <a href="#harness" data-i18n="nav.harness"></a>
+      <a href="#roadmap" data-i18n="nav.roadmap"></a>
+    </nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Language">
+        <button id="langKo" data-lang="ko">한국어</button>
+        <button id="langEn" data-lang="en">EN</button>
+        <button id="langZh" data-lang="zh">中文</button>
+      </div>
+      <button class="toolbtn" id="easyBtn" aria-pressed="false" data-i18n="tools.easy"></button>
+      <button class="toolbtn" id="themeBtn" aria-pressed="false" data-i18n="tools.dark"></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- 히어로 -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="ces"><span class="star">🏆</span><span data-i18n-html="hero.ces"></span></span>
+      <h1 data-i18n-html="hero.title"></h1>
+      <p class="sub" data-i18n="hero.sub"></p>
+      <p class="en" data-i18n="hero.en"></p>
+      <div class="hero-cta">
+        <a class="btn primary" href="#demo" data-i18n="hero.cta1"></a>
+        <a class="btn ghost" href="#agents" data-i18n="hero.cta2"></a>
+      </div>
+
+      <div class="loop" aria-label="4-step loop">
+        <div class="step"><span class="n">01</span><div class="ic">📋</div><h3 data-i18n-html="loop.1.t"></h3><p data-i18n-html="loop.1.d"></p></div>
+        <div class="step"><span class="n">02</span><div class="ic">🛡️</div><h3 data-i18n-html="loop.2.t"></h3><p data-i18n-html="loop.2.d"></p></div>
+        <div class="step"><span class="n">03</span><div class="ic">🎥</div><h3 data-i18n-html="loop.3.t"></h3><p data-i18n-html="loop.3.d"></p></div>
+        <div class="step"><span class="n">04</span><div class="ic">🩺</div><h3 data-i18n-html="loop.4.t"></h3><p data-i18n-html="loop.4.d"></p></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="v num" data-i18n="hero.s1.v"></div><div class="k" data-i18n="hero.s1.k"></div></div>
+        <div class="stat"><div class="v num" data-i18n="hero.s2.v"></div><div class="k" data-i18n="hero.s2.k"></div></div>
+        <div class="stat"><div class="v num" data-i18n="hero.s3.v"></div><div class="k" data-i18n="hero.s3.k"></div></div>
+        <div class="stat"><div class="v num" data-i18n="hero.s4.v"></div><div class="k" data-i18n="hero.s4.k"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5개 어워드 -->
+  <section class="awards" id="awards">
+    <div class="wrap">
+      <span class="kicker gold" data-i18n="awards.kicker"></span>
+      <h2 data-i18n="awards.title"></h2>
+      <p class="lead" data-i18n="awards.lead"></p>
+      <div class="grid cols5">
+        <div class="award"><span class="cat" data-i18n="awards.a1.cat"></span><div class="ic">🩺</div><h3 data-i18n="awards.a1.t"></h3><p data-i18n="awards.a1.d"></p><div class="pillar" data-i18n="awards.a1.p"></div></div>
+        <div class="award"><span class="cat" data-i18n="awards.a2.cat"></span><div class="ic">🧠</div><h3 data-i18n="awards.a2.t"></h3><p data-i18n="awards.a2.d"></p><div class="pillar" data-i18n="awards.a2.p"></div></div>
+        <div class="award"><span class="cat" data-i18n="awards.a3.cat"></span><div class="ic">🌐</div><h3 data-i18n="awards.a3.t"></h3><p data-i18n="awards.a3.d"></p><div class="pillar" data-i18n="awards.a3.p"></div></div>
+        <div class="award"><span class="cat" data-i18n="awards.a4.cat"></span><div class="ic">🛡️</div><h3 data-i18n="awards.a4.t"></h3><p data-i18n="awards.a4.d"></p><div class="pillar" data-i18n="awards.a4.p"></div></div>
+        <div class="award"><span class="cat" data-i18n="awards.a5.cat"></span><div class="ic">🏋️</div><h3 data-i18n="awards.a5.t"></h3><p data-i18n="awards.a5.d"></p><div class="pillar" data-i18n="awards.a5.p"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 문제 -->
+  <section class="problem" id="problem">
+    <div class="wrap">
+      <span class="kicker" data-i18n="prob.kicker"></span>
+      <h2 data-i18n="prob.title"></h2>
+      <p class="lead" data-i18n-html="prob.lead"></p>
+      <div class="grid cards">
+        <div class="card"><div class="big num" data-i18n="prob.c1.v"></div><h3 data-i18n="prob.c1.t"></h3><p data-i18n="prob.c1.d"></p><span class="badge peer tag" data-i18n="prob.c1.b"></span></div>
+        <div class="card"><div class="big num" data-i18n="prob.c2.v"></div><h3 data-i18n="prob.c2.t"></h3><p data-i18n="prob.c2.d"></p><span class="badge peer tag" data-i18n="prob.c2.b"></span></div>
+        <div class="card"><div class="big num" data-i18n="prob.c3.v"></div><h3 data-i18n="prob.c3.t"></h3><p data-i18n="prob.c3.d"></p><span class="badge sim tag" data-i18n="prob.c3.b"></span></div>
+        <div class="card"><div class="big num" data-i18n="prob.c4.v"></div><h3 data-i18n="prob.c4.t"></h3><p data-i18n="prob.c4.d"></p><span class="badge peer tag" data-i18n="prob.c4.b"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 혁신 -->
+  <section class="innovation" id="innovation">
+    <div class="wrap">
+      <span class="kicker" data-i18n="inno.kicker"></span>
+      <h2 data-i18n="inno.title"></h2>
+      <p class="lead" data-i18n-html="inno.lead"></p>
+      <div class="grid" style="grid-template-columns:1fr;margin-top:30px">
+        <div class="pill"><div class="idx">1</div><div><h3 data-i18n="inno.p1.t"></h3><p data-i18n="inno.p1.d"></p><div class="honest" data-i18n-html="inno.p1.h"></div></div></div>
+        <div class="pill"><div class="idx">2</div><div><h3 data-i18n="inno.p2.t"></h3><p data-i18n="inno.p2.d"></p><div class="honest" data-i18n-html="inno.p2.h"></div></div></div>
+        <div class="pill"><div class="idx">3</div><div><h3 data-i18n="inno.p3.t"></h3><p data-i18n="inno.p3.d"></p><div class="honest" data-i18n-html="inno.p3.h"></div></div></div>
+        <div class="pill"><div class="idx">4</div><div><h3 data-i18n="inno.p4.t"></h3><p data-i18n="inno.p4.d"></p><div class="honest" data-i18n-html="inno.p4.h"></div></div></div>
+        <div class="pill"><div class="idx">5</div><div><h3 data-i18n="inno.p5.t"></h3><p data-i18n="inno.p5.d"></p><div class="honest" data-i18n-html="inno.p5.h"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 작동 원리 -->
+  <section id="how" style="background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <span class="kicker" data-i18n="how.kicker"></span>
+      <h2 data-i18n="how.title"></h2>
+      <p class="lead" data-i18n-html="how.lead"></p>
+      <div class="grid cols4">
+        <div class="card module"><span class="ribbon" data-i18n="how.m1.r"></span><div class="num">①</div><h3 data-i18n="how.m1.t"></h3><p data-i18n="how.m1.d"></p><div class="why" data-i18n="how.m1.w"></div></div>
+        <div class="card module"><span class="ribbon" data-i18n="how.m2.r"></span><div class="num">②</div><h3 data-i18n="how.m2.t"></h3><p data-i18n="how.m2.d"></p><div class="why" data-i18n="how.m2.w"></div></div>
+        <div class="card module"><span class="ribbon" data-i18n="how.m3.r"></span><div class="num">③</div><h3 data-i18n="how.m3.t"></h3><p data-i18n="how.m3.d"></p><div class="why" data-i18n="how.m3.w"></div></div>
+        <div class="card module"><span class="ribbon" data-i18n="how.m4.r"></span><div class="num">④</div><h3 data-i18n="how.m4.t"></h3><p data-i18n="how.m4.d"></p><div class="why" data-i18n="how.m4.w"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 에이전틱 AI -->
+  <section class="agents" id="agents">
+    <div class="wrap">
+      <span class="kicker" data-i18n="agents.kicker"></span>
+      <h2 data-i18n="agents.title"></h2>
+      <p class="lead" data-i18n-html="agents.lead"></p>
+      <div class="grid cols5" id="agentsgrid"></div>
+    </div>
+  </section>
+
+  <!-- 데모 -->
+  <section class="demo" id="demo">
+    <div class="wrap">
+      <span class="kicker" data-i18n="demo.kicker"></span>
+      <h2 data-i18n="demo.title"></h2>
+      <p class="lead" data-i18n="demo.lead"></p>
+
+      <div class="demo-stage">
+        <div class="cam">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="overlay"></canvas>
+          <div class="hint" data-i18n="demo.hint"></div>
+          <div class="feedback idle" id="feedback"></div>
+        </div>
+
+        <div class="demo-panel">
+          <div class="metrics">
+            <div class="metric"><div class="v num" id="mReps">0</div><div class="k" data-i18n="demo.m1"></div></div>
+            <div class="metric"><div class="v num" id="mKnee">—</div><div class="k" data-i18n="demo.m2"></div></div>
+            <div class="metric"><div class="v num" id="mSym">—</div><div class="k" data-i18n="demo.m3"></div></div>
+          </div>
+
+          <div class="seg" role="group" aria-label="exercise">
+            <button class="btn ghost on" id="exSquat" aria-pressed="true" data-i18n="demo.ex1"></button>
+            <button class="btn ghost" id="exKnee" aria-pressed="false" data-i18n="demo.ex2"></button>
+          </div>
+
+          <div class="controls">
+            <button class="btn primary" id="camBtn" data-i18n="demo.camStart"></button>
+            <button class="btn ghost" id="simBtn" data-i18n="demo.simStart"></button>
+          </div>
+
+          <div class="gatebox">
+            <div class="gh"><span class="dot" id="gateDot"></span> <span data-i18n="demo.gateTitle"></span> <span class="badge sim" style="margin-left:auto" data-i18n="demo.noLLM"></span></div>
+            <ul class="rules" id="rules">
+              <li data-rule="knee" id="rKnee"><span class="st"></span><span><span class="code">R-TKA-STR-01</span> <span data-i18n="demo.r1"></span></span></li>
+              <li data-rule="trunk" id="rTrunk"><span class="st"></span><span><span class="code">R-OA-CORE-02</span> <span data-i18n="demo.r2"></span></span></li>
+              <li data-rule="sym" id="rSym"><span class="st"></span><span><span class="code">R-OA-SYM-01</span> <span data-i18n="demo.r3"></span></span></li>
+              <li data-rule="qual" id="rQual"><span class="st"></span><span><span class="code">R-IN-QUAL-01</span> <span data-i18n="demo.r4"></span></span></li>
+            </ul>
+          </div>
+
+          <div class="netpanel" aria-label="network">
+            <div class="row"><span data-i18n="demo.net1.k"></span><b class="on" data-i18n="demo.net1.v"></b></div>
+            <div class="row"><span data-i18n="demo.net2.k"></span><b data-i18n="demo.net2.v"></b></div>
+            <div class="row"><span data-i18n="demo.net3.k"></span><b data-i18n="demo.net3.v"></b></div>
+          </div>
+
+          <p class="demo-note" data-i18n-html="demo.note"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 스펙 -->
+  <section id="spec">
+    <div class="wrap">
+      <span class="kicker" data-i18n="spec.kicker"></span>
+      <h2 data-i18n="spec.title"></h2>
+      <div class="specgrid" id="specgrid"></div>
+    </div>
+  </section>
+
+  <!-- 근거 -->
+  <section id="evidence" style="background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <span class="kicker" data-i18n="ev.kicker"></span>
+      <h2 data-i18n="ev.title"></h2>
+      <p class="lead" data-i18n-html="ev.lead"></p>
+      <div class="grid cards">
+        <div class="card"><h3 data-i18n="ev.e1.t"></h3><p data-i18n="ev.e1.d"></p><span class="badge peer tag" data-i18n="ev.e1.b1"></span><span class="badge phase2 tag" data-i18n="ev.e1.b2"></span></div>
+        <div class="card"><h3 data-i18n="ev.e2.t"></h3><p data-i18n="ev.e2.d"></p><span class="badge peer tag" data-i18n="ev.e2.b1"></span></div>
+        <div class="card"><h3 data-i18n="ev.e3.t"></h3><p data-i18n="ev.e3.d"></p><span class="badge peer tag" data-i18n="ev.e3.b1"></span></div>
+        <div class="card"><h3 data-i18n="ev.e4.t"></h3><p data-i18n="ev.e4.d"></p><span class="badge peer tag" data-i18n="ev.e4.b1"></span></div>
+        <div class="card"><h3 data-i18n="ev.e5.t"></h3><p data-i18n="ev.e5.d"></p><span class="badge peer tag" data-i18n="ev.e5.b1"></span></div>
+        <div class="card"><h3 data-i18n="ev.e6.t"></h3><p data-i18n="ev.e6.d"></p><span class="badge peer tag" data-i18n="ev.e6.b1"></span></div>
+      </div>
+      <p style="margin-top:22px;font-size:var(--fs-sm);color:var(--muted)" data-i18n-html="ev.hypo"></p>
+    </div>
+  </section>
+
+  <!-- 오픈 하네스 -->
+  <section class="harness" id="harness">
+    <div class="wrap">
+      <span class="kicker" data-i18n="har.kicker"></span>
+      <h2 data-i18n="har.title"></h2>
+      <p class="lead" data-i18n-html="har.lead"></p>
+      <div class="stats" id="harmetrics"></div>
+      <div class="grid cols3" id="harcards"></div>
+      <div class="hopen">
+        <div class="ic">🔓</div>
+        <div><b data-i18n="har.open.t"></b><p data-i18n="har.open.d"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 경쟁환경 -->
+  <section id="landscape">
+    <div class="wrap">
+      <span class="kicker" data-i18n="land.kicker"></span>
+      <h2 data-i18n="land.title"></h2>
+      <p class="lead" data-i18n="land.lead"></p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th data-i18n="land.th1"></th><th data-i18n="land.th2"></th><th data-i18n="land.th3"></th><th data-i18n="land.th4"></th></tr></thead>
+          <tbody id="landbody"></tbody>
+        </table>
+      </div>
+      <p style="margin-top:18px;font-size:var(--fs-sm);color:var(--muted)" data-i18n="land.foot"></p>
+    </div>
+  </section>
+
+  <!-- 특허 -->
+  <section id="patents" style="background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <span class="kicker" data-i18n="pat.kicker"></span>
+      <h2 data-i18n="pat.title"></h2>
+      <p class="lead" data-i18n="pat.lead"></p>
+      <div class="grid cards">
+        <div class="card"><h3 data-i18n="pat.p1.t"></h3><p data-i18n="pat.p1.d"></p><span class="tag-row" data-i18n="pat.p1.g1"></span><span class="tag-row" data-i18n="pat.p1.g2"></span></div>
+        <div class="card"><h3 data-i18n="pat.p2.t"></h3><p data-i18n="pat.p2.d"></p><span class="tag-row" data-i18n="pat.p2.g1"></span><span class="tag-row" data-i18n="pat.p2.g2"></span></div>
+        <div class="card"><h3 data-i18n="pat.p3.t"></h3><p data-i18n="pat.p3.d"></p><span class="tag-row" data-i18n="pat.p3.g1"></span><span class="tag-row" data-i18n="pat.p3.g2"></span></div>
+        <div class="card"><h3 data-i18n="pat.p4.t"></h3><p data-i18n="pat.p4.d"></p><span class="tag-row" data-i18n="pat.p4.g1"></span><span class="tag-row" data-i18n="pat.p4.g2"></span></div>
+      </div>
+      <p style="margin-top:20px;font-size:var(--fs-sm);color:var(--muted)" data-i18n-html="pat.foot"></p>
+    </div>
+  </section>
+
+  <!-- 로드맵 -->
+  <section id="roadmap">
+    <div class="wrap">
+      <span class="kicker" data-i18n="road.kicker"></span>
+      <h2 data-i18n="road.title"></h2>
+      <p class="lead" data-i18n="road.lead"></p>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h4>PoseFit Rehab v2</h4>
+        <p style="color:var(--muted);font-size:var(--fs-sm)" data-i18n="foot.tag"></p>
+        <div class="disc" data-i18n-html="foot.disc"></div>
+      </div>
+      <div class="sources">
+        <h4 data-i18n="foot.src"></h4>
+        <ul>
+          <li>Gürses et al. 2026 — clinician-supervised LLM exercise (RCT). <a href="https://dl.acm.org/doi/10.1007/978-3-032-30813-9_66">link</a></li>
+          <li>Chung 2026 — generative AI in PT (systematic review). <a href="https://openurl.ebsco.com/EPDB%3Agcd%3A10%3A40206746/detailv2">link</a></li>
+          <li>Koluman et al. 2026 — LLM vs expert (Bankart). <a href="https://dergipark.org.tr/en/download/article-cite-file/1884791/type/6">link</a></li>
+          <li>Das et al. 2026 — single-camera hybrid AI vision. <a href="https://link.springer.com/article/10.1038/s41598-026-55431-x">link</a></li>
+          <li>Qiao &amp; Wang 2026 — dual-regulation pose analysis. <a href="https://dl.acm.org/doi/abs/10.1007/s10489-026-07193-2">link</a></li>
+          <li>US20260057989A1 · JP2026073106A — <a href="https://eureka.patsnap.com/patent/US20260057989A1">patsnap</a></li>
+          <li>EverEx MORA — <a href="https://www.forbeskorea.co.kr/news/articleView.html?idxno=402112">forbes</a> · Sword/Kaia — <a href="https://candesic.com/article/sword-health-acquiring-kaia-health-acquisition/">candesic</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal" data-i18n="foot.legal"></div>
+  </div>
+</footer>
+
+<a class="human-btn" href="mailto:y3korea@gmail.com?subject=PoseFit%20Rehab" aria-label="Contact" data-i18n="foot.contact"></a>
+
+<script type="module">
+/* ================= i18n 사전 ================= */
+const I18N = {
+ko:{
+  disclaimer:"<b>인허가 전 연구 프로토타입</b> · 의료진이 처방한 홈운동의 <b>수행·순응 지원</b> 도구입니다. 진단·치료 결정 목적이 아니며, 화면의 모든 수치는 <b>시뮬레이션 또는 선행연구 벤치마크</b>입니다.",
+  "logo.sub":"v2 · 연구 프로토타입",
+  "nav.problem":"왜 필요한가","nav.innovation":"혁신","nav.how":"작동 원리","nav.agents":"에이전틱","nav.demo":"체험","nav.evidence":"근거","nav.harness":"하네스","nav.roadmap":"로드맵",
+  "tools.easy":"🔍 쉬운 화면","tools.dark":"🌙 다크","tools.light":"☀️ 라이트",
+  "hero.ces":"CES 2028 · 혁신상 <b>5개 부문</b> 출품 목표",
+  "hero.title":"의료진이 처방하고, <em>안전 게이트</em>가 검증하고, 에이전틱 AI 코치는 매일 곁에 있습니다.",
+  "hero.sub":"틀린 말만이 아니라, 빠진 말까지 찾아내는 재활 AI입니다.",
+  "hero.en":"Clinician-directed. Guardrail-verified. Agentic coaching every day.",
+  "hero.cta1":"▶ 30초 체험 시작","hero.cta2":"에이전트 아키텍처 보기",
+  "loop.1.t":"처방 <b>Studio</b>","loop.1.d":"전문의 처방 → 치료사가 홈운동 설계. AI는 번역·설명만 맡습니다.",
+  "loop.2.t":"검증 <b>Gate</b>","loop.2.d":"LLM 밖 결정론적 규칙이 진행·중단 기준·금기의 누락을 잡습니다.",
+  "loop.3.t":"코칭 <b>Coach</b>","loop.3.d":"카메라·음성으로 매일 코칭. 영상은 기기 밖으로 나가지 않습니다.",
+  "loop.4.t":"감독 <b>Console</b>","loop.4.d":"치료사가 검토·서명. 서명 전에는 처방 변경이 반영되지 않습니다.",
+  "hero.s1.v":"약 24억","hero.s1.k":"재활이 도움이 될 수 있는 인구 (전 세계)",
+  "hero.s2.v":"33~67%","hero.s2.k":"범용 LLM 재활 권고의 CPG 일치율",
+  "hero.s3.v":"3.45% vs 1.47%","hero.s3.k":"LLM 임상 요약의 누락률 vs 환각률",
+  "hero.s4.v":"80%+","hero.s4.k":"심각 오류 중 '누락'이 차지하는 비율",
+
+  "awards.kicker":"CES 2028 · Innovation Awards ×5",
+  "awards.title":"하나의 아키텍처, 다섯 가지 혁신",
+  "awards.lead":"각 부문은 독립적 성과가 아니라 하나의 안전 철학 — 'LLM은 처방하지 않고, 검증은 LLM 밖에서' — 이 다섯 방향으로 드러난 것입니다.",
+  "awards.a1.cat":"Digital Health","awards.a1.t":"Omission Guard","awards.a1.d":"환각이 아닌 '누락'을 최우선 실패 모드로 삼은 최초의 재활 AI.","awards.a1.p":"기둥: 누락 방어",
+  "awards.a2.cat":"Artificial Intelligence","awards.a2.t":"Evidence-Grounded RAG","awards.a2.d":"문장 단위 인용·근거등급 배지. 근거 없으면 기권.","awards.a2.p":"기둥: 근거 기반 RAG",
+  "awards.a3.cat":"Accessibility","awards.a3.t":"삼개국어 적응 설명","awards.a3.d":"한·영·중 + 읽기 수준 적응. 의미 보존 재검증으로 안전하게.","awards.a3.p":"기둥: 청중 적응 재작성",
+  "awards.a4.cat":"Human Security for All","awards.a4.t":"결정론적 안전 게이트","awards.a4.d":"LLM 없는 규칙 엔진. 공식 명세·버전·감사 가능.","awards.a4.p":"기둥: 안전 게이트",
+  "awards.a5.cat":"Fitness & Sports Tech","awards.a5.t":"Two-Speed Coaching","awards.a5.d":"세트 중엔 사전 승인 큐만, LLM은 세트 전후만. 지연·환각 위험 차단.","awards.a5.p":"기둥: 투 스피드 코칭",
+
+  "prob.kicker":"왜 필요한가",
+  "prob.title":"범용 LLM을 재활에 그대로 쓰면 안 되는 이유",
+  "prob.lead":"2026년 연구들은 한 방향을 가리킵니다. 진짜 위험은 '틀린 말'보다 <b>빠진 말</b> — 진행·중단 기준, 금기 경고의 누락 — 그리고 <b>사람이 AI를 쓸 때의 실패</b>에 있습니다.",
+  "prob.c1.v":"33~67%","prob.c1.t":"CPG 일치율이 들쭉날쭉","prob.c1.d":"요천추 신경근통 CPG와 LLM 권고의 일치율 33~67%, 반복 시 답변 26~68% 변동.","prob.c1.b":"동료심사",
+  "prob.c2.v":"3.45% / 1.47%","prob.c2.t":"누락이 환각보다 두 배 이상","prob.c2.d":"LLM 임상 요약의 주요 오류는 환각(1.47%)보다 누락(3.45%)이 두 배 넘게 많았습니다.","prob.c2.b":"동료심사",
+  "prob.c3.v":"80%+","prob.c3.t":"심각 오류 대부분은 '누락'","prob.c3.d":"NOHARM 분석에서 권고 적용 시 사례 최대 24.6% 심각 위해 가능, 심각 오류의 80% 이상이 누락.","prob.c3.b":"preprint 2025",
+  "prob.c4.v":"94.9% → 34.5%↓","prob.c4.t":"모델 성능 ≠ 사람의 성과","prob.c4.d":"LLM 단독 식별률 94.9% → 일반인 사용 시 34.5% 미만. 사람 개입이 오히려 실패로 이어질 수 있음.","prob.c4.b":"동료심사",
+
+  "inno.kicker":"우리가 검증할 과학적 가설",
+  "inno.title":"심사자가 볼 다섯 가지 혁신 — 그리고 정직한 한계",
+  "inno.lead":"아래는 <b>마케팅 문구가 아니라 검증 가능한 공학·임상 주장</b>입니다. 각각에 대한 한계도 명시합니다. 이것이 우리가 믿는 CES 수준의 정직함입니다.",
+  "inno.p1.t":"실패 모드의 재정의: 누락 > 환각","inno.p1.d":"임상 AI 안전 연구는 '환각'(commission)에 집중했지만, 재활에서 더 큰 위해는 '빠뜨리는 것'(omission)입니다. 우리는 Omission Guard를 독립 계층으로 분리해, LLM 출력의 완결성을 LLM 밖에서 결정론적으로 검사합니다.",
+  "inno.p1.h":"<b>한계:</b> 임상 검증 전(데이터 n=0). '누락이 우세하다'는 것은 인용 연구들의 재분석일 뿐, 우리 시스템이 실제로 위해를 줄였다는 증거는 아직 없습니다.",
+  "inno.p2.t":"LLM 바깥의 결정론적 안전 계층","inno.p2.d":"프롬프트 기반 안전은 확률적입니다. 우리는 게이트를 LLM과 독립된 규칙 엔진으로 만들어 공식 명세(규칙 ID·버전)가 가능하고, 동일 입력이면 항상 동일 판정이 나옵니다. 감사·재현 가능한 안전성입니다.",
+  "inno.p2.h":"<b>한계:</b> 규칙 엔진은 커버하는 규칙만큼만 안전합니다. 규칙 커버리지 자체를 정량화·외부 감사하는 절차가 필요합니다.",
+  "inno.p3.t":"시간적 분리(투 스피드)로 지연·환각 리스크 차단","inno.p3.d":"세트 중에는 LLM이 루프에 없습니다. 사전 승인된 결정론적 큐만 송출하고, LLM은 세트 전후의 비실시간 구간에서만 작동합니다. LLM의 지연·환각이 운동 중 안전을 침해할 경로를 구조적으로 없앴습니다.",
+  "inno.p3.h":"<b>한계:</b> '세트 전후' 경계를 잘못 나누면 여전히 위험합니다. 경계 판정(반복 카운팅 정확도)은 단일 카메라 한계로 오차가 있습니다.",
+  "inno.p4.t":"의미 보존 재검증을 가진 적응형 설명","inno.p4.d":"환자·보호자·치료사, 그리고 한·영·중 언어로 설명을 재작성할 때, 우리는 'LLM이 잘 바꿨겠지'를 신뢰하지 않습니다. 재작성된 문장의 임상 의미가 원문과 보존되는지를 다시 결정론적으로 검사합니다.",
+  "inno.p4.h":"<b>한계:</b> 의미 보존 검사는 임상 문구의 구조적 속성(수치·금기·용량)에 한정되며, 자유 텍스트의 의미 동등성은 별도 평가가 필요합니다.",
+  "inno.p5.t":"자동화 편향을 제품 지표로 계측","inno.p5.d":"사람+AI 협업의 실패(과의존)를 막기 위해, 콘솔에서 치료사의 AI 동의율·오버라이드를 추적합니다. '임상가가 AI에 얼마나 기계적으로 동의하는지'를 안전 지표로 노출합니다.",
+  "inno.p5.h":"<b>한계:</b> 자동화 편향 계측은 아직 설계 단계이며, 측정 지표의 타당도(생태학적)는 미검증입니다.",
+
+  "how.kicker":"작동 원리",
+  "how.title":"단일 적응증 · MVP 4개 모듈로 깊게",
+  "how.lead":"첫 적응증은 <b>무릎 골관절염(OA)·인공슬관절 전치환술(TKR) 홈운동</b> 하나입니다. 처방·용량·진행 판단은 LLM에 맡기지 않습니다.",
+  "how.m1.r":"MVP · 핵심 IP","how.m1.t":"Clinical Safety Gate + Omission Guard","how.m1.d":"환자 전달 전 FITT-VP 완결성·수술 후 단계·ROM/부하 한계·금기·레드플래그를 결정론적으로 검증하고, 빠진 진행·중단 기준을 찾아 채웁니다.","how.m1.w":"위반 시: 차단 → 재생성 → 치료사 에스컬레이션. 규칙 ID·버전을 감사로그에 기록.",
+  "how.m2.r":"MVP","how.m2.t":"Evidence-Grounded RAG","how.m2.d":"가이드라인 코퍼스를 질환·단계·근거수준으로 필터링해 검색하고, 권고 문장마다 인용 카드와 근거등급 배지를 붙입니다. 근거 없으면 기권합니다.","how.m2.w":"인용은 API 수준으로 구현해 '지어낸 인용'을 구조적으로 줄입니다.",
+  "how.m3.r":"MVP","how.m3.t":"Two-Speed Home Coach","how.m3.d":"브라우저 카메라(MediaPipe 33점)로 반복 수·관절각·좌우 대칭을 표시합니다. 세트 중에는 사전 승인 큐만 쓰고, LLM은 세트 전후에만 씁니다.","how.m3.w":"영상 무전송. 관절 수치만 오가며, visibility 낮으면 판정 보류.",
+  "how.m4.r":"MVP","how.m4.t":"Therapist Supervision Console","how.m4.d":"위험 우선순위 알림 큐, AI 제안 vs 치료사 판단 비교, 동의율·오버라이드 추적. 서명 전에는 환자에게 전달되지 않습니다.","how.m4.w":"자동화 편향·과의존에 제품 차원에서 대응하는 B2B 핵심 화면.",
+
+  "agents.kicker":"Agentic AI · Multi-Agent Architecture",
+  "agents.title":"다섯 에이전트, 하나의 안전 원칙",
+  "agents.lead":"에이전트가 도구를 호출하고 서로를 호출하는 최신 에이전틱 패턴(LangGraph 스타일)을 따릅니다. 단, <b>안전 임계 경로에 놓인 에이전트는 LLM이 아니라 결정론적 검증기</b>입니다. 이것이 이 아키텍처의 전부입니다.",
+  "agents.rows":[
+    ["🧭","llm","Planner Agent","전문의 처방과 EMR 맥락을 받아 FITT-VP 운동 계획으로 분해합니다. 도구를 호출하지만 최종 확정은 하지 않습니다.","LLM · 도구 사용"],
+    ["📚","llm","Retrieval Agent","가이드라인 코퍼스를 검색해 각 권고에 문장 단위 인용과 근거등급을 붙입니다. 근거 없으면 기권합니다.","LLM · 벡터 저장소"],
+    ["🛡️","det","Safety Agent","결정론적 게이트 + 누락 방어. 처방 완결성·ROM·금기·레드플래그를 LLM 없이 검증합니다.","결정론적 · LLM 미호출"],
+    ["🗣️","mix","Explanation Agent","청중·언어에 맞춰 설명을 재작성하고, 의미 보존을 결정론적으로 재검증합니다.","LLM + 결정론적 검사"],
+    ["🩺","human","Supervision Agent","위험 우선순위 큐와 자동화 편향 계측. 최종 결정과 서명은 사람입니다.","인간 루프"]
+  ],
+
+  "demo.kicker":"30초 체험","demo.title":"설치 없이 30초. 영상은 이 기기 밖으로 나가지 않습니다.","demo.lead":"노트북이나 폰 카메라로 직접 확인하세요. 카메라 영상은 브라우저 안에서 관절 위치로만 바뀌고, 서버로 전송되는 데이터는 없습니다.",
+  "demo.hint":"🎥 카메라 실시간 골격 · 온디바이스 처리",
+  "demo.m1":"반복 횟수","demo.m2":"무릎 각도 (°)","demo.m3":"좌우 대칭",
+  "demo.ex1":"의자 잡고 미니 스쿼트","demo.ex2":"앉아서 무릎 펴기",
+  "demo.camStart":"▶ 카메라 시작","demo.camStop":"■ 카메라 중지","demo.simStart":"샘플 시연 (카메라 없이)","demo.simStop":"■ 시연 중지",
+  "demo.gateTitle":"Clinical Safety Gate — 결정론적 규칙","demo.noLLM":"LLM 미호출",
+  "demo.r1":"무릎 굴곡 90° 이상 제한 (TKR 보호)","demo.r2":"상체 전방 쏠림 30° 이하 유지","demo.r3":"좌우 대칭 편차 12° 이내","demo.r4":"입력 품질 낮으면 판정 보류",
+  "demo.net1.k":"카메라 영상","demo.net1.v":"● 기기 안에서만 처리 (전송 없음)","demo.net2.k":"관절 수치 (서버)","demo.net2.v":"— (본 데모는 전송 없음)","demo.net3.k":"음성 LLM","demo.net3.v":"— (데모에서 미사용)",
+  "demo.note":"이 데모의 자세 피드백은 LLM이 아닌 <b>로컬 결정론적 규칙</b>으로 생성됩니다. 표시 각도는 화면 2D 기준이며, 실제 임상 판단이 아닌 시뮬레이션입니다.",
+  "demo.fb.ready":"카메라를 켜고 운동을 준비해 주세요.","demo.fb.starting":"카메라를 준비하고 있습니다…","demo.fb.good":"정확한 자세입니다. 계속 유지하세요!","demo.fb.nobody":"사람이 보이지 않습니다. 카메라 앞에 서 주세요.",
+  "demo.fb.squat":"의자나 벽을 잡고 미니 스쿼트를 시작해 보세요.","demo.fb.knee":"앉아서 무릎을 천천히 펴 보세요. (무릎 120° 이하 굴곡 제한)",
+  "demo.fb.blockKnee":"🛑 무릎을 {n}° 이상 굽히지 마세요! (TKR 보호)","demo.fb.warnTrunk":"⚠️ 상체가 너무 앞으로 쏠렸습니다. 허리를 세우세요.","demo.fb.warnSym":"⚖️ 좌우가 비대칭입니다. 무게 중심을 고르게.","demo.fb.warnSymSim":"⚖️ 좌우가 비대칭입니다.",
+  "demo.fb.simRun":"샘플 시연 중 — 스틱 피겨가 스쿼트를 합니다.","demo.fb.denied":"카메라 권한이 거부되었습니다. 샘플 시연으로 확인하거나 브라우저 설정에서 권한을 허용해 주세요.","demo.fb.notfound":"카메라 장치를 찾을 수 없습니다.","demo.fb.fail":"카메라를 시작할 수 없습니다. 샘플 시연을 이용해 주세요.","demo.fb.lowQual":"입력 품질이 낮습니다. 몸 전체가 보이도록 조정해 주세요.",
+
+  "spec.kicker":"제품 사양 (CES 스타일)","spec.title":"기술 사양",
+  "spec.rows":[
+    ["포즈 추정 모델","MediaPipe Pose Landmarker · 33 랜드마크 · Lite/Full 선택"],
+    ["추론 실행 위치","온디바이스 (브라우저 WASM/GPU) — 영상 비전송"],
+    ["에이전트 오케스트레이션","LangGraph 스타일 · Planner/Retrieval/Safety/Explanation/Supervision"],
+    ["LLM 사용 구간","세트 전후(비실시간)만 · 세트 중 결정론적 큐"],
+    ["안전 판정 엔진","결정론적 규칙 엔진 · 규칙 ID/버전 · 감사 로그"],
+    ["근거 인용","문장 단위 인용 + 근거등급 배지 · API 수준 인용"],
+    ["평가 하네스","RehabSafetyBench v0.1 (오픈소스 · 공개 리더보드)"],
+    ["언어","한국어 · English · 中文 (3개국어)"],
+    ["접근성","쉬운 화면(고대비·대형 텍스트·음성) · WCAG 2.2 AA 지향"],
+    ["적응증","무릎 OA · TKR 홈운동 (단일 적응증)"],
+    ["데모 수치","모두 시뮬레이션 / 선행연구 벤치마크"]
+  ],
+
+  "ev.kicker":"근거 · Trust Center","ev.title":"2026년 최신 연구가 말하는 것","ev.lead":"임상 성과가 없는 학생 팀이 공개할 수 있는 것은 <b>정직한 근거</b>입니다. 아래는 2026년 검색으로 갱신한 핵심 연구입니다. 모든 수치는 선행연구 벤치마크입니다.",
+  "ev.e1.t":"감독 하 LLM 운동 프로토콜은 안전했다","ev.e1.d":"퇴행성 무릎 질환 성인 52명 4-arm 파일럿 RCT. LLM 생성 프로토콜을 안전 검토 후 임상가 감독 아래 적용 시 중대 이상반응 0건, KOOS 개선은 수치상 컸으나 통계적 유의성 미달(p≈0.12).","ev.e1.b1":"동료심사 · 2026","ev.e1.b2":"대규모 RCT 필요",
+  "ev.e2.t":"AI는 전문가 설계에 미치지 못한다","ev.e2.d":"생성형 AI 물리치료 체계적 문헌고찰(12건). AI는 전문가 설계 대비 열위, 최선 결과는 AI-인간 협업에서. 인간 감독이 안전·효과의 전제.","ev.e2.b1":"동료심사 · 2026",
+  "ev.e3.t":"AI 텍스트의 20%가 주요 임상 오류","ev.e3.d":"Bankart 재활에서 ChatGPT-5 출력 20%(2/10)에서 주요 임상 오류, 전문가 프로토콜 0건. AI 텍스트는 읽기 쉽지만 중요 안전 정보가 자주 누락.","ev.e3.b1":"동료심사 · 2026",
+  "ev.e4.t":"촉진·동작분석을 대체할 수 없다","ev.e4.d":"유방암 생존자 운동 조언 분석. 촉진 평가·동작 분석·실시간 위험 판독을 못 하는 시스템에 임상 권한이 넘어가는 것을 막는 규제 경계 필요.","ev.e4.b1":"동료심사 · 2026",
+  "ev.e5.t":"단일 카메라 포즈의 신뢰도는 아직 편차","ev.e5.d":"MediaPipe + 퍼지 추론 단일 카메라 추적(Sci Rep 2026)은 광학 MoCap 대비 개별 ICC 0.005~0.68. 저자들은 임상·재택 배포 전 환자군 검증 필요.","ev.e5.b1":"동료심사 · 2026",
+  "ev.e6.t":"이중 규제 포즈 분석","ev.e6.d":"자세 안정성·보상 동작 검출을 위한 이중 규제 포즈 분석(Appl Intell 2026)은 REHAB24-6에서 프레임 단위 편차를 국소화하며 시각·음성·텍스트 피드백 제공.","ev.e6.b1":"동료심사 · 2026",
+  "ev.hypo":"우리가 검증할 가설: <b>결정론적 게이트</b>가 레드플래그 위음성률·누락률을 낮추고, <b>감독 콘솔</b>이 사람+AI 과업 성공률을 올리는지 — RehabSafetyBench v0.1(시나리오셋)에서 게이트 전후로 측정해 공개합니다.",
+
+  "har.kicker":"Open Evaluation Harness",
+  "har.title":"안전을 '주장'하지 않고 '측정해 공개'합니다",
+  "har.lead":"RehabSafetyBench v0.1은 <b>lm-evaluation-harness · HELM</b>에서 영감을 받은, 재활 LLM 안전 평가용 <b>오픈소스 하네스</b>입니다. 동일 입력이면 누구나 같은 숫자를 재현할 수 있게 설계합니다.",
+  "har.metrics":[
+    ["🎯","레드플래그 위음성률","놓친 금기·레드플래그 비율 (낮을수록 좋음)"],
+    ["🕳️","누락률","진행·중단 기준 누락 비율"],
+    ["🔁","반복 일관성 (ICC)","같은 입력에 대한 판정 일치도"],
+    ["👁️","환각률","지어낸 인용·수치 비율"]
+  ],
+  "har.cards":[
+    ["📋","시나리오셋 v0.1","무릎 OA·TKR 3개 프로토콜의 주석 달린 시나리오. 게이트 온/오프 A/B 측정."],
+    ["🏅","공개 리더보드","모델·게이트 조합별 안전 지표를 공개 순위로. 경쟁사도 동일 기준으로 측정."],
+    ["⚖️","독립 패널 채점","이중 주석 + 독립 임상 패널. 단일 채점자 편향을 배제합니다."]
+  ],
+  "har.open.t":"오픈소스 · 재현 가능",
+  "har.open.d":"MIT 라이선스 공개, 재현 가능한 실행 스크립트, 게이트 온/오프 대조 평가. 안전 주장은 우리가 아니라 재현하는 사람들이 검증합니다.",
+
+  "land.kicker":"경쟁환경 · 2026 갱신","land.title":"치열해지는 디지털 MSK 시장, 빈자리는 '검증 계층'","land.lead":"Sword의 카이아 인수($285M), Hinge 상장, 에버엑스의 식약처 첫 MSK DTx 허가까지. 그러나 <b>LLM 정확도·안전 지표를 공개</b>하는 플레이어는 확인되지 않았습니다.",
+  "land.th1":"기업 · 제품","land.th2":"방식","land.th3":"AI","land.th4":"규제 · IP · 자본",
+  "land.rows":[
+    ["EverEx MORA (한국)","소프트웨어 only, 카메라","자체 AI '그리핀' — 5척추 포함 24관절, 70만 동작 학습","모라 큐어 = 국내 최초 MSK DTx 식약처 허가 · CES 2024·2026 혁신상 · 특허 39건 등 IP 83건"],
+    ["Sword Health (포르투갈/미국)","센서 기반","'Phoenix' AI care specialist","기업가치 약 $4B · 2026-01 카이아 $285M 인수 · FDA 클리어드"],
+    ["Hinge Health (미국)","카메라 AI 모션 트래킹","실시간 폼 피드백 + 케어 팀","가입자 1,900만+ · 2025 NYSE 상장(HNGE)"],
+    ["Kaia Health (미국/독일)","AI + 컴퓨터비전","MSK·COPD DTx","독일 DiGA 수가 경로 · Sword에 인수"],
+    ["아이픽셀 EXERCITE REHAB (한국)","에이전틱 AI + 3D 동작분석 SaMD","처방형 디지털의료기기","식약처 확증 임상계획 승인 · 다기관 RCT"],
+    ["휴로틱스 H-Medi (한국)","보행재활 웨어러블 로봇","보행 분석·보조","조달청 혁신제품(2026-03)"],
+    ["에이치로보틱스 Rebless (한국)","로봇 보조 정형운동장치","상지 재활","식약처 3등급 허가"],
+    ["PoseFit Rehab v2 (본 프로젝트)","카메라(마커리스) + 규칙 엔진","결정론적 안전 게이트 + 누락 탐지. LLM은 처방하지 않음","공개 안전 지표 · 치료사 서명 워크플로 · 연구 프로토타입"]
+  ],
+  "land.foot":"포지셔닝: 우리는 경쟁자가 아니라 <b>보완재</b>입니다. 빅테크 웰니스 코치와 LLM 처방형 플랫폼 위에 얹히는 <b>'재활 수직 규칙 + 임상가 루프'</b>로 들어갑니다.",
+
+  "pat.kicker":"특허 랜드스케이프","pat.title":"2026년 특허 동향과 우리의 화이트스페이스","pat.lead":"최근 출원들은 'LLM이 개입을 생성·랭킹'하고 '생성형 AI가 홈에서 동작을 안내'하는 방향으로 수렴합니다. 확인된 범위에서 <b>LLM 바깥의 결정론적 검증 계층을 핵심 청구로 삼은 사례</b>는 희소합니다.",
+  "pat.p1.t":"US20260057989A1","pat.p1.d":"객관적 측정 기반으로 LLM에 입력 가능한 의료 기술 언어로 개입을 기술하고, LLM이 효능 척도에 따라 개입 목록을 생성·랭킹.","pat.p1.g1":"LLM 개입 생성","pat.p1.g2":"미국",
+  "pat.p2.t":"JP2026073106A","pat.p2.d":"요통 환자에게 생성형 AI가 개인화 치료 계획을 제안하고, 올바른 운동을 안내하며 호전까지 관리하는 홈 치료 시스템.","pat.p2.g1":"생성형 AI 가이드","pat.p2.g2":"일본",
+  "pat.p3.t":"Rom Technologies · US12558594B2","pat.p3.d":"전자기계 재활 장치를 머신러닝으로 제어하고, 세션 중 생성형 LLM + NLP로 사용자를 안내하는 물리치료 시스템 (2026-02 공개).","pat.p3.g1":"ML 제어","pat.p3.g2":"미국",
+  "pat.p4.t":"BR 51 2026 002058 1","pat.p4.d":"MediaPipe 33 랜드마크 + Unity 3D로 요통 치료용 시리어스 게임. 일반 카메라만으로 3D 자세를 검증하는 저비용 원격재활 (TRL 8).","pat.p4.g1":"MediaPipe 게임화","pat.p4.g2":"브라질",
+  "pat.foot":"우리의 차별점(화이트스페이스 가설): <b>① 세션 경계형 투 스피드 코칭</b>, <b>② Omission Guard</b>, <b>③ 감독 콘솔의 자동화 편향 계측</b>, <b>④ 의미 보존 재검증</b>. FTO는 변리사 검토로 확정합니다.",
+
+  "road.kicker":"로드맵 → CES 2028","road.title":"작게 약속하고 깊게 만듭니다","road.lead":"MVP는 4개 모듈뿐입니다. 나머지는 파일럿 데이터가 쌓인 뒤 여는 로드맵으로 공개합니다.",
+  "road.steps":[
+    ["현재 · MVP","Gate · Studio · Coach · Console","무릎 OA·TKR 단일 적응증. 결정론적 게이트, 처방 스튜디오, 카메라 코치, 감독 콘솔.",false],
+    ["2026 Q4","RehabSafetyBench v0.1 + 독립 패널","3개 프로토콜 시나리오셋으로 게이트 전후 위음성률·누락률·반복 일관성 측정. ICC 보고.",false],
+    ["2027 Q1","식약처 사전상담 · 섀도 운영 · 사용적합성","비의료기기 범위 확인, 실제 처방 데이터로 게이트 섀도 테스트, 고령자·보호자 사용성 평가.",false],
+    ["2027 Q2~Q4","에이전틱 오케스트레이션 + 하네스 v0.2","LangGraph 오케스트레이션·도구 호출 배선, 3개국어 의미 보존 검증, 공개 리더보드 출시.",false],
+    ["2028-01","CES 2028 · 라스베이거스 출품","혁신상 5개 부문 제출. 비의료기기 부분집합 공개 체험판 + 영어 영상·스크린샷 에셋.",true],
+    ["2028 이후","Adherence Engine · FHIR/PROM","탈락 위험 예측, MI 재참여 대화, SMART on FHIR·마이헬스웨이 연동. 종단 데이터 확보 후.",false]
+  ],
+
+  "foot.tag":"의료진이 처방하고, 안전 게이트가 검증하고, 에이전틱 AI 코치는 매일 곁에 있습니다. 빠진 것까지 찾아내는 재활 AI.",
+  "foot.disc":"<b>의도된 사용 고지:</b> 본 웹사이트와 데모는 <b>의료진이 처방한 홈운동의 수행·순응을 지원</b>하기 위한 도구이며, <b>진단이나 치료 결정 목적이 아닙니다.</b> 인허가 전 연구 프로토타입이며, 표시된 모든 수치는 <b>시뮬레이션 또는 선행연구 벤치마크</b>입니다. 콘솔은 24시간 모니터링되지 않습니다. 증상이 있으면 즉시 담당 의료진이나 응급기관(한국 119 / 미국 911 / 중국 120)에 연락하세요.",
+  "foot.src":"주요 출처 (2026-10-08 갱신)","foot.contact":"🤝 사람 연결",
+  "foot.legal":"본 페이지는 'AI재활실습응용' 수업 프로젝트용 교육·연구 산출물입니다. 상표·수상·허가 정보는 각 출처의 사실을 요약한 것이며, 안전성·유효성 인증으로 해석해서는 안 됩니다. 특허·규제 내용은 일반 정보로, 법률 자문이 아닙니다."
+},
+
+en:{
+  disclaimer:"<b>Pre-market research prototype</b> · A tool to <b>support adherence to clinician-prescribed home exercise</b>. Not for diagnosis or treatment decisions; every figure is a <b>simulation or literature benchmark</b>.",
+  "logo.sub":"v2 · research prototype",
+  "nav.problem":"Why","nav.innovation":"Innovation","nav.how":"How","nav.agents":"Agentic","nav.demo":"Demo","nav.evidence":"Evidence","nav.harness":"Harness","nav.roadmap":"Roadmap",
+  "tools.easy":"🔍 Easy View","tools.dark":"🌙 Dark","tools.light":"☀️ Light",
+  "hero.ces":"CES 2028 · targeting <b>5 Innovation Award</b> categories",
+  "hero.title":"Clinician-directed. <em>Guardrail-verified.</em> Agentic coaching every day.",
+  "hero.sub":"A rehabilitation AI that catches not just what is wrong — but what is missing.",
+  "hero.en":"의료진이 처방하고, 안전 게이트가 검증하고, 에이전틱 AI 코치는 매일 곁에 있습니다.",
+  "hero.cta1":"▶ Try the 30-sec demo","hero.cta2":"See the agent architecture",
+  "loop.1.t":"Prescribe <b>Studio</b>","loop.1.d":"Physician prescription → therapist designs home exercise. AI only translates and explains.",
+  "loop.2.t":"Verify <b>Gate</b>","loop.2.d":"Deterministic rules outside the LLM catch missing progression/stop criteria and contraindications.",
+  "loop.3.t":"Coach <b>Coach</b>","loop.3.d":"Daily coaching via camera & voice. Video never leaves the device.",
+  "loop.4.t":"Supervise <b>Console</b>","loop.4.d":"Therapist review & sign-off. No prescription change reaches the patient before signature.",
+  "hero.s1.v":"~2.4B","hero.s1.k":"people who could benefit from rehabilitation (worldwide)",
+  "hero.s2.v":"33–67%","hero.s2.k":"CPG agreement of generic-LLM rehab advice",
+  "hero.s3.v":"3.45% vs 1.47%","hero.s3.k":"omission vs hallucination in LLM clinical summaries",
+  "hero.s4.v":"80%+","hero.s4.k":"of severe errors are omissions",
+
+  "awards.kicker":"CES 2028 · Innovation Awards ×5",
+  "awards.title":"One architecture, five innovations",
+  "awards.lead":"Each category is not a separate achievement but one safety philosophy — “the LLM never prescribes, and verification lives outside the LLM” — expressed in five directions.",
+  "awards.a1.cat":"Digital Health","awards.a1.t":"Omission Guard","awards.a1.d":"The first rehab AI to treat omission, not hallucination, as its primary failure mode.","awards.a1.p":"Pillar: omission guard",
+  "awards.a2.cat":"Artificial Intelligence","awards.a2.t":"Evidence-Grounded RAG","awards.a2.d":"Sentence-level citations with evidence-grade badges. Abstains when evidence is absent.","awards.a2.p":"Pillar: grounded RAG",
+  "awards.a3.cat":"Accessibility","awards.a3.t":"Trilingual adaptive explanation","awards.a3.d":"KR/EN/ZH plus reading-level adaptation, made safe by semantic-preservation re-verification.","awards.a3.p":"Pillar: audience-adaptive rewrite",
+  "awards.a4.cat":"Human Security for All","awards.a4.t":"Deterministic safety gate","awards.a4.d":"An LLM-free rule engine — formally specified, versioned, auditable.","awards.a4.p":"Pillar: safety gate",
+  "awards.a5.cat":"Fitness & Sports Tech","awards.a5.t":"Two-Speed Coaching","awards.a5.d":"Pre-approved cues only during sets; LLM only before/after. Latency & hallucination risk blocked.","awards.a5.p":"Pillar: two-speed coaching",
+
+  "prob.kicker":"Why this matters",
+  "prob.title":"Why a generic LLM cannot be dropped into rehabilitation",
+  "prob.lead":"2026 research points one way. The real risk is not “wrong words” but <b>missing words</b> — omitted progression/stop criteria and contraindication warnings — plus <b>human failure when using AI</b>.",
+  "prob.c1.v":"33–67%","prob.c1.t":"CPG agreement swings wildly","prob.c1.d":"LLM advice agreed with lumbosacral radicular pain CPGs only 33–67%, and repeated answers varied 26–68%.","prob.c1.b":"peer-reviewed",
+  "prob.c2.v":"3.45% / 1.47%","prob.c2.t":"Omission doubles hallucination","prob.c2.d":"Major errors in LLM clinical summaries were omission (3.45%), more than double hallucination (1.47%).","prob.c2.b":"peer-reviewed",
+  "prob.c3.v":"80%+","prob.c3.t":"Most severe errors are omissions","prob.c3.d":"NOHARM: applying advice could seriously harm up to 24.6% of cases; >80% of severe errors were omissions.","prob.c3.b":"preprint 2025",
+  "prob.c4.v":"94.9% → <34.5%","prob.c4.t":"Model ability ≠ human outcome","prob.c4.d":"LLM-only disease ID hit 94.9%, but laypeople using the same LLM fell below 34.5%. Human involvement can worsen outcomes.","prob.c4.b":"peer-reviewed",
+
+  "inno.kicker":"The hypotheses we will test",
+  "inno.title":"Five innovations a reviewer will see — with honest limits",
+  "inno.lead":"These are <b>testable engineering & clinical claims, not marketing</b>. Each states its limit. That honesty is what we believe CES-grade rigor looks like.",
+  "inno.p1.t":"Reframing the failure mode: omission > hallucination","inno.p1.d":"Clinical-AI safety has focused on hallucination (commission), but in rehab the greater harm is omission. We isolate an Omission Guard as an independent layer that deterministically checks LLM-output completeness outside the LLM.",
+  "inno.p1.h":"<b>Limit:</b> pre-clinical (n=0). “Omission dominates” is a re-analysis of cited studies, not yet proof our system reduces harm.",
+  "inno.p2.t":"A deterministic safety layer outside the LLM","inno.p2.d":"Prompt-based safety is probabilistic. We make the gate an LLM-independent rule engine so it can be formally specified (rule ID + version) and is reproducible — identical input always yields identical verdicts.",
+  "inno.p2.h":"<b>Limit:</b> the engine is only as safe as its rule coverage; coverage itself must be quantified and externally audited.",
+  "inno.p3.t":"Temporal separation (two-speed) blocks latency & hallucination","inno.p3.d":"During sets there is no LLM in the loop — only pre-approved deterministic cues. The LLM operates only in the non-real-time before/after windows, structurally removing any path for LLM latency or hallucination to harm mid-exercise safety.",
+  "inno.p3.h":"<b>Limit:</b> boundary errors in rep-counting (single-camera) could misclassify the before/after boundary.",
+  "inno.p4.t":"Adaptive explanation with semantic-preservation re-verification","inno.p4.d":"When rewriting explanations for patient/caregiver/therapist and across KR/EN/ZH, we do not trust “the LLM probably rephrased well.” We deterministically re-check that the clinical meaning (values, contraindications, dosing) is preserved.",
+  "inno.p4.h":"<b>Limit:</b> the checker covers structural attributes (numbers, contraindications, dosing); free-text semantic equivalence needs separate evaluation.",
+  "inno.p5.t":"Automation bias measured as a product metric","inno.p5.d":"To counter human+AI collaboration failure (over-reliance), the console tracks clinician agreement rate and overrides with AI — surfacing “how mechanically clinicians agree with AI” as a safety metric.",
+  "inno.p5.h":"<b>Limit:</b> bias instrumentation is design-stage; metric validity is unvalidated.",
+
+  "how.kicker":"How it works",
+  "how.title":"Deep on a single indication, four MVP modules",
+  "how.lead":"First indication: <b>home exercise for knee osteoarthritis (OA) and total knee replacement (TKR)</b>. Prescription, dosing, and progression are never delegated to an LLM.",
+  "how.m1.r":"MVP · core IP","how.m1.t":"Clinical Safety Gate + Omission Guard","how.m1.d":"Before reaching the patient, deterministically validates FITT-VP completeness, post-op stage, ROM/load limits, contraindications and red flags, then fills missing progression/stop criteria.","how.m1.w":"On violation: block → regenerate → escalate to therapist. Rule ID + version logged.",
+  "how.m2.r":"MVP","how.m2.t":"Evidence-Grounded RAG","how.m2.d":"Filters a guideline corpus by condition/stage/evidence level, attaches a citation card and evidence-grade badge to each recommendation; abstains when evidence is absent.","how.m2.w":"Citations are constructed at the API level to structurally reduce fabricated citations.",
+  "how.m3.r":"MVP","how.m3.t":"Two-Speed Home Coach","how.m3.d":"Browser camera (MediaPipe 33 landmarks) shows rep count, joint angles and left–right symmetry. Pre-approved cues only during sets; LLM only before/after.","how.m3.w":"No video transmission; joint values only; hold verdicts when visibility is low.",
+  "how.m4.r":"MVP","how.m4.t":"Therapist Supervision Console","how.m4.d":"Risk-prioritized alert queue, AI-suggestion vs clinician-decision comparison, agreement & override tracking. Nothing reaches the patient before signature.","how.m4.w":"A B2B screen that counters automation bias and over-reliance at the product level.",
+
+  "agents.kicker":"Agentic AI · Multi-Agent Architecture",
+  "agents.title":"Five agents, one safety principle",
+  "agents.lead":"We follow the latest agentic pattern — agents that call tools and call each other (LangGraph-style). But the agent on the <b>safety-critical path is a deterministic verifier, not an LLM</b>. That is the entire architecture.",
+  "agents.rows":[
+    ["🧭","llm","Planner Agent","Decomposes a physician prescription plus EMR context into a FITT-VP exercise plan. Calls tools but never finalizes.","LLM · tool use"],
+    ["📚","llm","Retrieval Agent","Searches the guideline corpus and attaches sentence-level citations and evidence grades. Abstains without evidence.","LLM · vector store"],
+    ["🛡️","det","Safety Agent","Deterministic gate + omission guard. Validates completeness, ROM, contraindications and red flags with no LLM.","Deterministic · no LLM"],
+    ["🗣️","mix","Explanation Agent","Rewrites explanations per audience & language, then deterministically re-verifies semantic preservation.","LLM + deterministic check"],
+    ["🩺","human","Supervision Agent","Risk-prioritized queue and automation-bias instrumentation. The human makes the final call and signs.","Human-in-the-loop"]
+  ],
+
+  "demo.kicker":"30-second demo","demo.title":"No install. 30 seconds. Video never leaves this device.","demo.lead":"Try it with your laptop or phone camera. Video is converted to joint positions inside the browser; no data is sent to any server.",
+  "demo.hint":"🎥 real-time skeleton · on-device",
+  "demo.m1":"Reps","demo.m2":"Knee angle (°)","demo.m3":"Symmetry",
+  "demo.ex1":"Chair-assisted mini squat","demo.ex2":"Seated knee extension",
+  "demo.camStart":"▶ Start camera","demo.camStop":"■ Stop camera","demo.simStart":"Sample demo (no camera)","demo.simStop":"■ Stop demo",
+  "demo.gateTitle":"Clinical Safety Gate — deterministic rules","demo.noLLM":"no LLM",
+  "demo.r1":"Limit knee flexion to 90°+ (TKR protection)","demo.r2":"Keep forward trunk lean ≤ 30°","demo.r3":"Keep L/R asymmetry ≤ 12°","demo.r4":"Withhold verdict when input quality is low",
+  "demo.net1.k":"Camera video","demo.net1.v":"● on-device only (no transmission)","demo.net2.k":"Joint values (server)","demo.net2.v":"— (none in this demo)","demo.net3.k":"Voice LLM","demo.net3.v":"— (not used in demo)",
+  "demo.note":"Posture feedback in this demo is generated by <b>local deterministic rules</b>, not an LLM. Angles are 2D screen approximations — a simulation, not a clinical judgment.",
+  "demo.fb.ready":"Turn on the camera and get ready to exercise.","demo.fb.starting":"Preparing camera…","demo.fb.good":"Good form. Keep it up!","demo.fb.nobody":"No person detected. Please stand in front of the camera.",
+  "demo.fb.squat":"Hold a chair or wall and start a mini squat.","demo.fb.knee":"Seated, slowly extend the knee. (limit flexion to ≤ 120°)",
+  "demo.fb.blockKnee":"🛑 Do not bend the knee past {n}°! (TKR protection)","demo.fb.warnTrunk":"⚠️ Torso leaning too far forward. Straighten your back.","demo.fb.warnSym":"⚖️ Left/right asymmetry. Even out your weight.","demo.fb.warnSymSim":"⚖️ Left/right asymmetry.",
+  "demo.fb.simRun":"Sample running — the stick figure performs a squat.","demo.fb.denied":"Camera permission denied. Use the sample demo or allow camera access in browser settings.","demo.fb.notfound":"No camera device found.","demo.fb.fail":"Could not start the camera. Use the sample demo.",
+
+  "spec.kicker":"Specifications (CES style)","spec.title":"Technical specifications",
+  "spec.rows":[
+    ["Pose estimation model","MediaPipe Pose Landmarker · 33 landmarks · Lite/Full selectable"],
+    ["Inference location","On-device (browser WASM/GPU) — no video transmission"],
+    ["Agent orchestration","LangGraph-style · Planner/Retrieval/Safety/Explanation/Supervision"],
+    ["LLM usage window","Before/after sets only (non-real-time) · deterministic cues during sets"],
+    ["Safety engine","Deterministic rule engine · rule ID/version · audit log"],
+    ["Evidence citation","Sentence-level citation + evidence-grade badges · API-level citation"],
+    ["Evaluation harness","RehabSafetyBench v0.1 (open-source · public leaderboard)"],
+    ["Languages","한국어 · English · 中文 (trilingual)"],
+    ["Accessibility","Easy View (high contrast, large text, voice) · WCAG 2.2 AA target"],
+    ["Indication","Knee OA · TKR home exercise (single indication)"],
+    ["Demo figures","all simulations / literature benchmarks"]
+  ],
+
+  "ev.kicker":"Evidence · Trust Center","ev.title":"What the latest 2026 research says","ev.lead":"What a student team with no clinical outcomes can publish is <b>honest evidence</b>. Below are key studies refreshed via 2026 search. All figures are literature benchmarks.",
+  "ev.e1.t":"Supervised LLM exercise protocols were safe","ev.e1.d":"52 adults with degenerative knee disease, 4-arm pilot RCT. LLM-generated protocols, safety-reviewed and clinician-supervised, caused 0 serious AEs; KOOS improvement was numerically larger but not significant (p≈0.12).","ev.e1.b1":"peer-reviewed · 2026","ev.e1.b2":"needs large RCT",
+  "ev.e2.t":"AI still underperforms expert design","ev.e2.d":"Systematic review of generative AI in physiotherapy (12 studies). AI was inferior to expert-designed programs; best outcomes came from AI–human collaboration. Human supervision is the precondition for safety & efficacy.","ev.e2.b1":"peer-reviewed · 2026",
+  "ev.e3.t":"20% of AI text had major clinical errors","ev.e3.d":"For Bankart rehabilitation, 20% (2/10) of ChatGPT-5 outputs had major clinical errors vs 0 for expert protocols. AI text reads well but critical safety information is frequently omitted.","ev.e3.b1":"peer-reviewed · 2026",
+  "ev.e4.t":"Cannot replace palpation & motion analysis","ev.e4.d":"Analysis of exercise advice for breast-cancer survivors argues for regulatory boundaries that keep clinical authority out of systems unable to palpate, analyze motion or read risk in real time.","ev.e4.b1":"peer-reviewed · 2026",
+  "ev.e5.t":"Single-camera pose reliability still varies","ev.e5.d":"MediaPipe + fuzzy single-camera tracking (Sci Rep 2026) showed per-joint ICC 0.005–0.68 vs optical MoCap; authors require patient-group validation before clinical/home deployment.","ev.e5.b1":"peer-reviewed · 2026",
+  "ev.e6.t":"Dual-regulation pose analysis","ev.e6.d":"Dual-regulation pose analysis (Appl Intell 2026) localizes frame-level deviations on REHAB24-6 with visual, voice and text feedback.","ev.e6.b1":"peer-reviewed · 2026",
+  "ev.hypo":"Our hypotheses to test: does a <b>deterministic gate</b> lower red-flag false-negative and omission rates, and does a <b>supervision console</b> raise human+AI task success — measured before/after the gate on RehabSafetyBench v0.1 (scenario set) and published.",
+
+  "har.kicker":"Open Evaluation Harness",
+  "har.title":"We don't claim safety — we measure and publish it",
+  "har.lead":"RehabSafetyBench v0.1 is an <b>open-source harness</b> for rehab-LLM safety, inspired by <b>lm-evaluation-harness · HELM</b>. Designed so anyone can reproduce the same numbers from the same input.",
+  "har.metrics":[
+    ["🎯","Red-flag false-negative rate","Rate of missed contraindications & red flags (lower is better)"],
+    ["🕳️","Omission rate","Rate of missing progression/stop criteria"],
+    ["🔁","Repeat consistency (ICC)","Agreement of verdicts on identical input"],
+    ["👁️","Hallucination rate","Rate of fabricated citations & figures"]
+  ],
+  "har.cards":[
+    ["📋","Scenario set v0.1","Annotated knee-OA/TKR scenarios across 3 protocols. Gate on/off A/B measurement."],
+    ["🏅","Public leaderboard","Safety metrics ranked by model+gate combination. Competitors measured on the same yardstick."],
+    ["⚖️","Independent panel scoring","Double annotation + independent clinical panel. Excludes single-rater bias."]
+  ],
+  "har.open.t":"Open-source · reproducible",
+  "har.open.d":"MIT license, reproducible run scripts, gate on/off controlled comparison. Safety is verified by those who reproduce it — not claimed by us.",
+
+  "land.kicker":"Landscape · refreshed 2026","land.title":"A maturing digital-MSK market with an empty seat: the verification layer","land.lead":"From Sword's Kaia acquisition ($285M) and Hinge's IPO to EverEx's first MFDS MSK-DTx clearance — the market is maturing. Yet no player we found <b>publishes LLM accuracy & safety metrics</b>.",
+  "land.th1":"Company · product","land.th2":"Approach","land.th3":"AI","land.th4":"Regulatory · IP · capital",
+  "land.rows":[
+    ["EverEx MORA (KR)","Software-only, camera","Proprietary AI 'Gryphon' — 24 joints incl. 5 spine, 700k motions","MORA Cure = first MSK DTx MFDS clearance in KR · CES 2024/2026 Innovation · 83 IP (39 patents)"],
+    ["Sword Health (PT/US)","Sensor-based","'Phoenix' AI care specialist (2024)","~$4B valuation · Jan-2026 Kaia acquisition $285M · FDA-cleared"],
+    ["Hinge Health (US)","Camera AI motion tracking","Real-time form feedback + care team","19M+ members · 2025 NYSE listing (HNGE)"],
+    ["Kaia Health (US/DE)","AI + computer vision","MSK · COPD DTx","German DiGA reimbursement path · acquired by Sword"],
+    ["iPixel EXERCITE REHAB (KR)","Agentic AI + 3D motion-analysis SaMD","Prescription digital therapeutic","MFDS confirmatory clinical plan approved · multicenter RCT"],
+    ["Hurotics H-Medi (KR)","Gait-rehab wearable robot","Gait analysis & assistance","Korea Public Procurement innovation product (2026-03)"],
+    ["H Robotics Rebless (KR)","Robot-assisted orthopedic device","Upper-limb rehab","MFDS Class 3 clearance"],
+    ["PoseFit Rehab v2 (this project)","Camera (markerless) + rule engine","Deterministic safety gate + omission detection; LLM never prescribes","Public safety metrics · therapist sign-off workflow · research prototype"]
+  ],
+  "land.foot":"Positioning: we are a <b>complement</b>, not a competitor — a <b>“rehab vertical rules + clinician loop”</b> layered on top of big-tech wellness coaches and LLM-prescribing platforms.",
+
+  "pat.kicker":"Patent landscape","pat.title":"2026 patent trends and our white space","pat.lead":"Recent filings converge on “LLM generates & ranks interventions” and “generative AI guides home movement.” In the scope we reviewed, <b>a deterministic verification layer outside the LLM as a core claim is rare</b>.",
+  "pat.p1.t":"US20260057989A1","pat.p1.d":"Describes interventions in an LLM-ingestible medical-technology language from objective measurement; an LLM generates and ranks intervention lists by efficacy measure.","pat.p1.g1":"LLM intervention generation","pat.p1.g2":"US",
+  "pat.p2.t":"JP2026073106A","pat.p2.d":"A home-treatment system where generative AI proposes personalized plans for low-back-pain patients and guides correct exercise through recovery.","pat.p2.g1":"Generative-AI guide","pat.p2.g2":"JP",
+  "pat.p3.t":"Rom Technologies · US12558594B2","pat.p3.d":"ML controls an electromechanical rehab device; a generative LLM + NLP guides users during sessions (published 2026-02).","pat.p3.g1":"ML control","pat.p3.g2":"US",
+  "pat.p4.t":"BR 51 2026 002058 1","pat.p4.d":"MediaPipe 33 landmarks + Unity 3D builds a low-back-pain serious game; low-cost remote rehab validating 3D posture with a plain camera (TRL 8).","pat.p4.g1":"MediaPipe gamification","pat.p4.g2":"BR",
+  "pat.foot":"Our white-space hypothesis: <b>① session-bounded two-speed coaching</b>, <b>② Omission Guard</b>, <b>③ automation-bias instrumentation in the console</b>, <b>④ semantic-preservation re-verification</b>. FTO to be confirmed by patent counsel.",
+
+  "road.kicker":"Roadmap → CES 2028","road.title":"Promise small, build deep","road.lead":"The MVP is four modules only. The rest opens on the roadmap after pilot data accumulates.",
+  "road.steps":[
+    ["Now · MVP","Gate · Studio · Coach · Console","Single knee OA/TKR indication. Deterministic gate, prescription studio, camera coach, supervision console.",false],
+    ["2026 Q4","RehabSafetyBench v0.1 + independent panel","Measure false-negative rate, omission rate and repeat consistency before/after the gate on a 3-protocol scenario set. Report ICC.",false],
+    ["2027 Q1","MFDS pre-consultation · shadow ops · usability","Confirm non-medical-device scope, shadow-test the gate on real prescription data, usability with older adults & caregivers.",false],
+    ["2027 Q2–Q4","Agentic orchestration + harness v0.2","Wire LangGraph orchestration & tool calls, validate semantic preservation in 3 languages, launch the public leaderboard.",false],
+    ["2028-01","CES 2028 · Las Vegas","Submit to 5 Innovation Award categories. Public trial of the non-medical-device subset + English video/screenshot assets.",true],
+    ["2028+","Adherence Engine · FHIR/PROM","Dropout-risk prediction, MI re-engagement dialogue, SMART on FHIR · MyHealthway integration. After longitudinal data.",false]
+  ],
+
+  "foot.tag":"Clinician-directed. Guardrail-verified. Agentic coaching every day. A rehab AI that catches what's missing.",
+  "foot.disc":"<b>Intended use:</b> this site and demo <b>support adherence to clinician-prescribed home exercise</b> and are <b>not for diagnosis or treatment decisions.</b> Pre-market research prototype; all figures are <b>simulations or literature benchmarks</b>. The console is not monitored 24/7. If you have symptoms, contact your clinician or emergency services (US 911 / KR 119 / CN 120) immediately.",
+  "foot.src":"Key sources (refreshed 2026-10-08)","foot.contact":"🤝 Contact a human","foot.legal":"This page is an educational & research artifact for the 'AI Rehabilitation Practice' course. Trademark, award and clearance mentions summarize facts from each source and must not be read as safety or efficacy certification. Patent & regulatory content is general information, not legal advice."
+},
+
+zh:{
+  disclaimer:"<b>上市前研究原型</b> · 用于<b>支持临床医生处方的家庭运动依从性</b>。不用于诊断或治疗决策；所有数据均为<b>模拟或文献基准</b>。",
+  "logo.sub":"v2 · 研究原型",
+  "nav.problem":"为什么","nav.innovation":"创新","nav.how":"原理","nav.agents":"智能体","nav.demo":"体验","nav.evidence":"证据","nav.harness":"评测","nav.roadmap":"路线图",
+  "tools.easy":"🔍 大字模式","tools.dark":"🌙 暗色","tools.light":"☀️ 亮色",
+  "hero.ces":"CES 2028 · 目标 <b>5 项</b>创新奖",
+  "hero.title":"医生处方，<em>安全门</em>校验，多智能体教练每日相伴。",
+  "hero.sub":"一款不仅能发现说错的话，更能发现漏说的话的康复 AI。",
+  "hero.en":"Clinician-directed. Guardrail-verified. Agentic coaching every day.",
+  "hero.cta1":"▶ 体验 30 秒演示","hero.cta2":"查看智能体架构",
+  "loop.1.t":"处方 <b>Studio</b>","loop.1.d":"医生开处方 → 治疗师设计家庭运动。AI 只负责翻译与解释。",
+  "loop.2.t":"校验 <b>Gate</b>","loop.2.d":"LLM 之外的确定性规则，捕捉进展/停止标准与禁忌的遗漏。",
+  "loop.3.t":"教练 <b>Coach</b>","loop.3.d":"通过摄像头与语音每日指导。视频不出设备。",
+  "loop.4.t":"监督 <b>Console</b>","loop.4.d":"治疗师审核并签名。签名前处方变更不会到达患者。",
+  "hero.s1.v":"约 24 亿","hero.s1.k":"可从康复获益的人口（全球）",
+  "hero.s2.v":"33~67%","hero.s2.k":"通用 LLM 康复建议与临床指南的一致率",
+  "hero.s3.v":"3.45% vs 1.47%","hero.s3.k":"LLM 临床摘要的遗漏率 vs 幻觉率",
+  "hero.s4.v":"80%+","hero.s4.k":"严重错误中「遗漏」所占比例",
+
+  "awards.kicker":"CES 2028 · 五项创新奖",
+  "awards.title":"一套架构，五项创新",
+  "awards.lead":"每个奖项并非孤立成果，而是同一安全哲学——「LLM 不开处方，验证在 LLM 之外」——的五个面向。",
+  "awards.a1.cat":"Digital Health","awards.a1.t":"遗漏防护","awards.a1.d":"首款将「遗漏」而非「幻觉」作为首要失效模式的康复 AI。","awards.a1.p":"支柱：遗漏防护",
+  "awards.a2.cat":"Artificial Intelligence","awards.a2.t":"循证检索增强","awards.a2.d":"句级引用与证据等级徽章。无证据即弃权。","awards.a2.p":"支柱：循证 RAG",
+  "awards.a3.cat":"Accessibility","awards.a3.t":"三语自适应解释","awards.a3.d":"韩·英·中三语 + 阅读水平自适应，并以语义保持复检保障安全。","awards.a3.p":"支柱：受众自适应改写",
+  "awards.a4.cat":"Human Security for All","awards.a4.t":"确定性安全门","awards.a4.d":"无 LLM 的规则引擎——可形式化说明、版本化、可审计。","awards.a4.p":"支柱：安全门",
+  "awards.a5.cat":"Fitness & Sports Tech","awards.a5.t":"双速教练","awards.a5.d":"组间仅用预批准提示，LLM 只在组前/组后介入。阻断延迟与幻觉风险。","awards.a5.p":"支柱：双速教练",
+
+  "prob.kicker":"为什么需要",
+  "prob.title":"为何不能把通用 LLM 直接用于康复",
+  "prob.lead":"2026 年的研究指向同一方向：真正的风险不是「说错的话」，而是<b>漏说的话</b>——进展/停止标准与禁忌警告的遗漏——以及<b>人使用 AI 时的失败</b>。",
+  "prob.c1.v":"33~67%","prob.c1.t":"指南一致率波动大","prob.c1.d":"LLM 建议与腰骶神经根痛临床指南一致率仅 33~67%，重复提问答案变动 26~68%。","prob.c1.b":"同行评审",
+  "prob.c2.v":"3.45% / 1.47%","prob.c2.t":"遗漏是幻觉的两倍以上","prob.c2.d":"LLM 临床摘要的主要错误中，遗漏（3.45%）是幻觉（1.47%）的两倍多。","prob.c2.b":"同行评审",
+  "prob.c3.v":"80%+","prob.c3.t":"严重错误多为「遗漏」","prob.c3.d":"NOHARM 分析显示按建议执行最多 24.6% 病例可能严重受害，严重错误中 80% 以上为遗漏。","prob.c3.b":"预印本 2025",
+  "prob.c4.v":"94.9% → <34.5%","prob.c4.t":"模型能力 ≠ 人的结果","prob.c4.d":"LLM 单独识别率 94.9%，普通人使用同一 LLM 却降至 34.5% 以下。人的介入反而可能失败。","prob.c4.b":"同行评审",
+
+  "inno.kicker":"我们将检验的科学假设",
+  "inno.title":"评审会看到的五项创新——以及诚实的局限",
+  "inno.lead":"以下是<b>可检验的工程与临床主张，而非营销</b>。每项都注明局限。这份诚实，正是我们所相信的 CES 级严谨。",
+  "inno.p1.t":"重新定义失效模式：遗漏 > 幻觉","inno.p1.d":"临床 AI 安全研究多聚焦于幻觉（多写），但康复中更大的危害是「漏写」。我们将 Omission Guard 独立成层，在 LLM 之外以确定性方式检查其输出的完整性。",
+  "inno.p1.h":"<b>局限：</b>临床验证前（数据 n=0）。「遗漏占优」只是对引用研究的再分析，尚未证明本系统确实降低了危害。",
+  "inno.p2.t":"LLM 之外的确定性安全层","inno.p2.d":"基于提示词的安全是概率性的。我们将安全门做成与 LLM 无关的规则引擎，可做形式化说明（规则 ID+版本）且可复现——相同输入永远得到相同判定。",
+  "inno.p2.h":"<b>局限：</b>引擎只与其规则覆盖一样安全；覆盖度本身需量化并接受外部审计。",
+  "inno.p3.t":"时间分离（双速）阻断延迟与幻觉","inno.p3.d":"组间运动过程中 LLM 不在回路中，仅使用预批准的确定性提示；LLM 只在组前/组后的非实时窗口运行，结构上消除了 LLM 延迟或幻觉危害运动中安全的路径。",
+  "inno.p3.h":"<b>局限：</b>重复计数的边界误差（单摄像头）可能误判组前/组后边界。",
+  "inno.p4.t":"带语义保持复检的自适应解释","inno.p4.d":"面向患者/照护者/治疗师及韩·英·中三语改写解释时，我们不信任「LLM 大概改得不错」，而是再次以确定性方式检验临床语义（数值、禁忌、剂量）是否保持。",
+  "inno.p4.h":"<b>局限：</b>复检覆盖结构化属性（数值、禁忌、剂量）；自由文本的语义等价需另行评估。",
+  "inno.p5.t":"把自动化偏倚作为产品指标来测量","inno.p5.d":"为对抗人+AI 协作失败（过度依赖），控制台追踪治疗师对 AI 的同意率与覆盖操作，把「临床医生对 AI 机械同意的程度」作为安全指标暴露出来。",
+  "inno.p5.h":"<b>局限：</b>偏倚测量尚在设计阶段，指标效度未经验证。",
+
+  "how.kicker":"工作原理",
+  "how.title":"单一适应症 · 四个 MVP 模块做深",
+  "how.lead":"首个适应症：<b>膝骨关节炎（OA）与全膝关节置换（TKR）家庭运动</b>。处方、剂量与进展判断绝不交给 LLM。",
+  "how.m1.r":"MVP · 核心 IP","how.m1.t":"临床安全门 + 遗漏防护","how.m1.d":"在到达患者前，以确定性方式校验 FITT-VP 完整性、术后阶段、ROM/负荷上限、禁忌与红旗，并补齐缺失的进展/停止标准。","how.m1.w":"违规时：阻断 → 重新生成 → 升级给治疗师。规则 ID+版本写入审计日志。",
+  "how.m2.r":"MVP","how.m2.t":"循证检索增强","how.m2.d":"按疾病/阶段/证据等级筛选指南语料，为每条建议附加引用卡与证据等级徽章；无证据即弃权。","how.m2.w":"在 API 层构造引用，结构上减少「编造引用」。",
+  "how.m3.r":"MVP","how.m3.t":"双速家庭教练","how.m3.d":"浏览器摄像头（MediaPipe 33 点）显示重复次数、关节角与左右对称。组间仅用预批准提示，LLM 只在组前/组后介入。","how.m3.w":"视频不传输，仅传关节数值；可见度过低则暂缓判定。",
+  "how.m4.r":"MVP","how.m4.t":"治疗师监督控制台","how.m4.d":"风险优先级告警队列、AI 建议 vs 治疗师判断对比、同意率与覆盖追踪。签名前不会到达患者。","how.m4.w":"在产品层面对抗自动化偏倚与过度依赖的 B2B 核心界面。",
+
+  "agents.kicker":"Agentic AI · 多智能体架构",
+  "agents.title":"五个智能体，一条安全原则",
+  "agents.lead":"遵循最新的智能体范式——智能体调用工具并相互调用（LangGraph 风格）。但位于<b>安全关键路径上的智能体是确定性验证器，而非 LLM</b>。这就是整个架构。",
+  "agents.rows":[
+    ["🧭","llm","Planner Agent","将医生处方与 EMR 上下文分解为 FITT-VP 运动计划。调用工具但不做最终定案。","LLM · 工具调用"],
+    ["📚","llm","Retrieval Agent","检索指南语料，为每条建议附加句级引用与证据等级。无证据即弃权。","LLM · 向量库"],
+    ["🛡️","det","Safety Agent","确定性安全门 + 遗漏防护。无 LLM 地校验完整性、ROM、禁忌与红旗。","确定性 · 不调用 LLM"],
+    ["🗣️","mix","Explanation Agent","按受众与语言改写解释，再以确定性方式复检语义保持。","LLM + 确定性检查"],
+    ["🩺","human","Supervision Agent","风险优先级队列与自动化偏倚测量。最终决定与签名由人完成。","人在回路"]
+  ],
+
+  "demo.kicker":"30 秒体验","demo.title":"无需安装，30 秒。视频不出本设备。","demo.lead":"用笔记本或手机摄像头直接体验。视频在浏览器内转换为关节点，不向任何服务器发送数据。",
+  "demo.hint":"🎥 摄像头实时骨骼 · 端侧处理",
+  "demo.m1":"重复次数","demo.m2":"膝关节角度 (°)","demo.m3":"左右对称",
+  "demo.ex1":"扶椅迷你深蹲","demo.ex2":"坐位伸膝",
+  "demo.camStart":"▶ 开启摄像头","demo.camStop":"■ 关闭摄像头","demo.simStart":"示例演示（无摄像头）","demo.simStop":"■ 停止演示",
+  "demo.gateTitle":"临床安全门 — 确定性规则","demo.noLLM":"未调用 LLM",
+  "demo.r1":"限制屈膝超过 90°（TKR 保护）","demo.r2":"保持躯干前倾 ≤ 30°","demo.r3":"保持左右不对称 ≤ 12°","demo.r4":"输入质量低时暂缓判定",
+  "demo.net1.k":"摄像头视频","demo.net1.v":"● 仅端侧处理（不传输）","demo.net2.k":"关节数值（服务器）","demo.net2.v":"—（本演示不传输）","demo.net3.k":"语音 LLM","demo.net3.v":"—（演示中未使用）",
+  "demo.note":"本演示的姿势反馈由<b>本地确定性规则</b>生成，而非 LLM。角度为屏幕 2D 近似——是模拟，而非临床判断。",
+  "demo.fb.ready":"请打开摄像头，准备开始运动。","demo.fb.starting":"正在准备摄像头…","demo.fb.good":"姿势正确，继续保持！","demo.fb.nobody":"未检测到人。请站在摄像头前。",
+  "demo.fb.squat":"扶住椅子或墙壁，开始迷你深蹲。","demo.fb.knee":"坐姿，缓慢伸直膝盖。（限制屈膝 ≤ 120°）",
+  "demo.fb.blockKnee":"🛑 请勿屈膝超过 {n}°！（TKR 保护）","demo.fb.warnTrunk":"⚠️ 躯干前倾过多，请挺直腰背。","demo.fb.warnSym":"⚖️ 左右不对称，请均衡重心。","demo.fb.warnSymSim":"⚖️ 左右不对称。",
+  "demo.fb.simRun":"示例运行中 — 火柴人正在做深蹲。","demo.fb.denied":"摄像头权限被拒绝。请使用示例演示，或在浏览器设置中允许摄像头权限。","demo.fb.notfound":"未找到摄像头设备。","demo.fb.fail":"无法开启摄像头，请使用示例演示。",
+
+  "spec.kicker":"产品规格（CES 风格）","spec.title":"技术规格",
+  "spec.rows":[
+    ["姿态估计模型","MediaPipe Pose Landmarker · 33 关键点 · Lite/Full 可选"],
+    ["推理位置","端侧（浏览器 WASM/GPU）— 视频不传输"],
+    ["智能体编排","LangGraph 风格 · Planner/Retrieval/Safety/Explanation/Supervision"],
+    ["LLM 使用窗口","仅组前/组后（非实时）· 组间确定性提示"],
+    ["安全引擎","确定性规则引擎 · 规则 ID/版本 · 审计日志"],
+    ["证据引用","句级引用 + 证据等级徽章 · API 层引用"],
+    ["评测框架","RehabSafetyBench v0.1（开源 · 公开排行榜）"],
+    ["语言","한국어 · English · 中文（三语）"],
+    ["无障碍","大字模式（高对比、大字号、语音）· 目标 WCAG 2.2 AA"],
+    ["适应症","膝 OA · TKR 家庭运动（单一适应症）"],
+    ["演示数据","均为模拟 / 文献基准"]
+  ],
+
+  "ev.kicker":"证据 · 信任中心","ev.title":"2026 年最新研究怎么说","ev.lead":"没有临床结果的学生团队能公开的，是<b>诚实的证据</b>。以下为 2026 年检索更新的关键研究，所有数据均为文献基准。",
+  "ev.e1.t":"监督下的 LLM 运动方案是安全的","ev.e1.d":"52 名退行性膝病成人、4 臂先导 RCT。LLM 生成方案经安全审查并在临床医生监督下执行，严重不良事件 0 例；KOOS 改善数值上更大但无统计显著（p≈0.12）。","ev.e1.b1":"同行评审 · 2026","ev.e1.b2":"需大规模 RCT",
+  "ev.e2.t":"AI 仍不及专家设计","ev.e2.d":"生成式 AI 物理治疗系统综述（12 项研究）。AI 逊于专家设计，最佳结果来自 AI–人类协作。人类监督是安全与疗效的前提。","ev.e2.b1":"同行评审 · 2026",
+  "ev.e3.t":"AI 文本 20% 存在重大临床错误","ev.e3.d":"Bankart 康复中，ChatGPT-5 输出 20%（2/10）有重大临床错误，专家方案为 0。AI 文本易读但关键安全信息常被遗漏。","ev.e3.b1":"同行评审 · 2026",
+  "ev.e4.t":"无法替代触诊与动作分析","ev.e4.d":"乳腺癌幸存者运动建议分析主张建立监管边界，阻止临床权力流向无法触诊、无法动作分析、无法实时判读风险的系统。","ev.e4.b1":"同行评审 · 2026",
+  "ev.e5.t":"单摄像头姿态可靠性仍有偏差","ev.e5.d":"MediaPipe + 模糊推理单摄像头追踪（Sci Rep 2026）相对光学 MoCap 单关节 ICC 0.005~0.68；作者要求在临床/居家部署前做患者群验证。","ev.e5.b1":"同行评审 · 2026",
+  "ev.e6.t":"双重约束姿态分析","ev.e6.d":"双重约束姿态分析（Appl Intell 2026）在 REHAB24-6 上定位帧级偏差，提供视觉、语音与文本反馈。","ev.e6.b1":"同行评审 · 2026",
+  "ev.hypo":"我们要检验的假设：<b>确定性安全门</b>能否降低红旗漏报率与遗漏率，<b>监督控制台</b>能否提升人+AI 任务成功率——在 RehabSafetyBench v0.1（情景集）上于安全门前后测量并公开。",
+
+  "har.kicker":"Open Evaluation Harness",
+  "har.title":"不「宣称」安全，而是「测量并公开」",
+  "har.lead":"RehabSafetyBench v0.1 是受 <b>lm-evaluation-harness · HELM</b> 启发的康复 LLM 安全评测<b>开源框架</b>。设计目标：相同输入，任何人都能复现相同的数字。",
+  "har.metrics":[
+    ["🎯","红旗漏报率","漏掉的禁忌与红旗比例（越低越好）"],
+    ["🕳️","遗漏率","缺失进展/停止标准的比例"],
+    ["🔁","重复一致性 (ICC)","相同输入下判定的一致度"],
+    ["👁️","幻觉率","编造引用与数值的比例"]
+  ],
+  "har.cards":[
+    ["📋","情景集 v0.1","膝 OA/TKR 三个协议的标注情景。安全门开/关 A/B 测量。"],
+    ["🏅","公开排行榜","按模型+安全门组合排名安全指标。竞品用同一把尺子衡量。"],
+    ["⚖️","独立评审打分","双标注 + 独立临床评审。排除单一评分者偏倚。"]
+  ],
+  "har.open.t":"开源 · 可复现",
+  "har.open.d":"MIT 许可公开、可复现运行脚本、安全门开/关对照评估。安全由复现者验证，而非由我们宣称。",
+
+  "land.kicker":"竞品格局 · 2026 更新","land.title":"日益成熟的数字 MSK 市场，空缺是「验证层」","land.lead":"从 Sword 收购 Kaia（2.85 亿美元）、Hinge 上市，到 EverEx 获韩国食药处首款 MSK DTx 许可——市场正在成熟。然而我们未发现任何玩家<b>公开 LLM 准确率与安全指标</b>。",
+  "land.th1":"企业 · 产品","land.th2":"方式","land.th3":"AI","land.th4":"监管 · 知识产权 · 资本",
+  "land.rows":[
+    ["EverEx MORA（韩）","纯软件、摄像头","自研 AI「Gryphon」— 含 5 脊柱共 24 关节，70 万动作","MORA Cure = 韩国首款 MSK DTx 许可 · CES 2024/2026 创新奖 · 83 项 IP（39 专利）"],
+    ["Sword Health（葡/美）","传感器","「Phoenix」AI 照护专员","估值约 $4B · 2026-01 收购 Kaia $285M · FDA 认证"],
+    ["Hinge Health（美）","摄像头 AI 动作追踪","实时姿势反馈 + 照护团队","会员 1900 万+ · 2025 纽交所上市（HNGE）"],
+    ["Kaia Health（美/德）","AI + 计算机视觉","MSK·COPD DTx","德国 DiGA 医保路径 · 被 Sword 收购"],
+    ["iPixel EXERCITE REHAB（韩）","智能体 AI + 3D 动作分析 SaMD","处方型数字疗法","食药处确证性临床计划获批 · 多中心 RCT"],
+    ["Hurotics H-Medi（韩）","步态康复可穿戴机器人","步态分析与辅助","韩国采购厅创新产品（2026-03）"],
+    ["H Robotics Rebless（韩）","机器人辅助骨科设备","上肢康复","食药处 3 类许可"],
+    ["PoseFit Rehab v2（本项目）","摄像头（无标记）+ 规则引擎","确定性安全门 + 遗漏检测；LLM 不开处方","公开安全指标 · 治疗师签名流程 · 研究原型"]
+  ],
+  "land.foot":"定位：我们是<b>互补者</b>而非竞争者——叠加在大型科技健康教练与 LLM 处方平台之上的<b>「康复垂直规则 + 临床医生闭环」</b>。",
+
+  "pat.kicker":"专利版图","pat.title":"2026 年专利趋势与我们的空白区","pat.lead":"近期申请趋同于「LLM 生成并排序干预」与「生成式 AI 居家动作指导」。在我们审视的范围内，<b>以 LLM 之外的确定性验证层作为核心权利要求的案例十分少见</b>。",
+  "pat.p1.t":"US20260057989A1","pat.p1.d":"以客观测量为基础，用 LLM 可摄入的医疗技术语言描述干预，LLM 依疗效指标生成并排序干预清单。","pat.p1.g1":"LLM 干预生成","pat.p1.g2":"美国",
+  "pat.p2.t":"JP2026073106A","pat.p2.d":"面向腰背痛患者的居家治疗系统，生成式 AI 提出个性化方案并指导正确运动直至好转。","pat.p2.g1":"生成式 AI 指导","pat.p2.g2":"日本",
+  "pat.p3.t":"Rom Technologies · US12558594B2","pat.p3.d":"机器学习控制机电康复设备，会话中由生成式 LLM+NLP 指导用户（2026-02 公开）。","pat.p3.g1":"ML 控制","pat.p3.g2":"美国",
+  "pat.p4.t":"BR 51 2026 002058 1","pat.p4.d":"MediaPipe 33 关键点 + Unity 3D 构建腰背痛严肃游戏；普通摄像头即可验证 3D 姿势的低成本远程康复（TRL 8）。","pat.p4.g1":"MediaPipe 游戏化","pat.p4.g2":"巴西",
+  "pat.foot":"我们的空白区假设：<b>① 会话边界式双速教练</b>、<b>② 遗漏防护</b>、<b>③ 控制台的自动化偏倚测量</b>、<b>④ 语义保持复检</b>。FTO 由专利律师确认。",
+
+  "road.kicker":"路线图 → CES 2028","road.title":"承诺小而做深","road.lead":"MVP 只有四个模块，其余待先导数据积累后按路线图开放。",
+  "road.steps":[
+    ["现在 · MVP","Gate · Studio · Coach · Console","膝 OA/TKR 单一适应症。确定性安全门、处方工作室、摄像头教练、监督控制台。",false],
+    ["2026 Q4","RehabSafetyBench v0.1 + 独立评审","在 3 方案情景集上于安全门前后测量漏报率、遗漏率与重复一致性，报告 ICC。",false],
+    ["2027 Q1","食药处事前咨询 · 影子运行 · 可用性","确认非医疗器械范围，用真实处方数据影子测试安全门，开展老年人/照护者可用性评估。",false],
+    ["2027 Q2~Q4","智能体编排 + 评测 v0.2","接入 LangGraph 编排与工具调用，验证三语语义保持，发布公开排行榜。",false],
+    ["2028-01","CES 2028 · 拉斯维加斯","提交 5 个创新奖类别。公开非医疗器械子集体验版 + 英文视频/截图素材。",true],
+    ["2028 之后","依从性引擎 · FHIR/PROM","脱落风险预测、动机性访谈式再参与对话、SMART on FHIR·MyHealthway 集成。待纵向数据。",false]
+  ],
+
+  "foot.tag":"医生处方，安全门校验，多智能体教练每日相伴。一款能发现遗漏的康复 AI。",
+  "foot.disc":"<b>预期用途：</b>本网站与演示<b>支持临床医生处方的家庭运动依从性</b>，<b>不用于诊断或治疗决策。</b>上市前研究原型；所有数据均为<b>模拟或文献基准</b>。控制台并非 24/7 监控。如有症状，请立即联系临床医生或急救（中国 120 / 美国 911 / 韩国 119）。",
+  "foot.src":"主要来源（2026-10-08 更新）","foot.contact":"🤝 联系真人","foot.legal":"本页面为「AI 康复实践应用」课程的教育与研究产物。商标、奖项与许可信息仅为对各来源事实的概括，不得解读为安全或疗效认证。专利与监管内容为一般信息，不构成法律意见。"
+}
+};
+
+/* ================= 언어 상태 ================= */
+let cur = 'ko';
+try{ const saved = localStorage.getItem('posefit.lang'); if(saved && I18N[saved]) cur = saved; else { const nav = (navigator.language||'ko').toLowerCase(); cur = nav.startsWith('zh')?'zh':nav.startsWith('ko')?'ko':nav.startsWith('en')?'en':'ko'; } }catch(e){}
+const html = document.documentElement;
+function t(key, vars){ let s = (I18N[cur] && I18N[cur][key]) || I18N.en[key] || key; if(vars){ for(const k in vars) s = s.split('{'+k+'}').join(vars[k]); } return s; }
+function applyLang(){
+  document.documentElement.lang = cur;
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.getAttribute('data-i18n')));
+  document.querySelectorAll('[data-i18n-html]').forEach(el => el.innerHTML = t(el.getAttribute('data-i18n-html')));
+  document.querySelectorAll('#langKo,#langEn,#langZh').forEach(b => b.classList.toggle('on', b.getAttribute('data-lang')===cur));
+  renderSpec(); renderLandscape(); renderTimeline(); renderAgents(); renderHarness();
+  updateDemoStrings();
+}
+function renderSpec(){
+  const g = document.getElementById('specgrid'); g.innerHTML = '';
+  t('spec.rows').forEach(([k,v]) => { const r=document.createElement('div'); r.className='specrow'; r.innerHTML = '<span class="k"></span><span class="v"></span>'; r.querySelector('.k').textContent=k; r.querySelector('.v').textContent=v; g.appendChild(r); });
+}
+function renderLandscape(){
+  const tb = document.getElementById('landbody'); tb.innerHTML = '';
+  const rows = t('land.rows');
+  rows.forEach((row,i) => { const tr=document.createElement('tr'); if(i===rows.length-1) tr.className='ours'; row.forEach(c=>{ const td=document.createElement('td'); td.innerHTML=c; tr.appendChild(td); }); tb.appendChild(tr); });
+}
+function renderTimeline(){
+  const tl = document.getElementById('timeline'); tl.innerHTML = '';
+  t('road.steps').forEach(s => { const d=document.createElement('div'); d.className='tl'+(s[3]?' ces':''); d.innerHTML='<span class="when"></span><h3></h3><p></p>'; d.querySelector('.when').textContent=s[0]; d.querySelector('h3').textContent=s[1]; d.querySelector('p').textContent=s[2]; tl.appendChild(d); });
+}
+function renderAgents(){
+  const g = document.getElementById('agentsgrid'); g.innerHTML = '';
+  t('agents.rows').forEach(([ic,type,title,desc,role]) => {
+    const d=document.createElement('div'); d.className='agent'+(type==='det'?' det':'');
+    d.innerHTML='<div class="head"><span class="ic"></span><span class="tag"></span></div><h3></h3><p></p><div class="role"></div>';
+    d.querySelector('.ic').textContent=ic;
+    d.querySelector('.tag').textContent = t('agents.tag.'+type);
+    d.querySelector('.tag').className = 'tag '+type;
+    d.querySelector('h3').textContent=title;
+    d.querySelector('p').textContent=desc;
+    d.querySelector('.role').textContent=role;
+    g.appendChild(d);
+  });
+}
+function renderHarness(){
+  const m = document.getElementById('harmetrics'); m.innerHTML='';
+  t('har.metrics').forEach(([ic,v,k,d])=>{ const el=document.createElement('div'); el.className='hmetric'; el.innerHTML='<div class="ic"></div><div class="v"></div><div class="k"></div><div class="d"></div>'; el.querySelector('.ic').textContent=ic; el.querySelector('.v').textContent=v; el.querySelector('.k').textContent=k; el.querySelector('.d').textContent=d; m.appendChild(el); });
+  const c = document.getElementById('harcards'); c.innerHTML='';
+  t('har.cards').forEach(([ic,title,desc])=>{ const el=document.createElement('div'); el.className='card'; el.innerHTML='<div class="ic" style="font-size:1.6em"></div><h3></h3><p></p>'; el.querySelector('.ic').textContent=ic; el.querySelector('h3').textContent=title; el.querySelector('p').textContent=desc; c.appendChild(el); });
+}
+// 에이전트 태그 라벨 (모든 언어)
+['ko','en','zh'].forEach(l=>{
+  const tags = {
+    ko:{llm:'LLM',det:'결정론적',human:'인간 루프',mix:'LLM+검사'},
+    en:{llm:'LLM',det:'Deterministic',human:'Human loop',mix:'LLM+check'},
+    zh:{llm:'LLM',det:'确定性',human:'人在回路',mix:'LLM+检查'}
+  };
+  if(!I18N[l]['agents.tag.llm']) Object.assign(I18N[l], { 'agents.tag.llm':tags[l].llm,'agents.tag.det':tags[l].det,'agents.tag.human':tags[l].human,'agents.tag.mix':tags[l].mix });
+});
+document.getElementById('langKo').addEventListener('click',()=>{cur='ko';try{localStorage.setItem('posefit.lang','ko')}catch(e){}applyLang();});
+document.getElementById('langEn').addEventListener('click',()=>{cur='en';try{localStorage.setItem('posefit.lang','en')}catch(e){}applyLang();});
+document.getElementById('langZh').addEventListener('click',()=>{cur='zh';try{localStorage.setItem('posefit.lang','zh')}catch(e){}applyLang();});
+
+/* ================= 쉬운 화면 · 다크 ================= */
+const easyBtn = document.getElementById('easyBtn');
+const themeBtn = document.getElementById('themeBtn');
+easyBtn.addEventListener('click', () => {
+  const on = html.classList.toggle('easy-view');
+  easyBtn.setAttribute('aria-pressed', on);
+  easyBtn.textContent = t('tools.easy');
+  announce(on ? (cur==='en'?'Easy view on. Text is larger.':cur==='zh'?'已开启大字模式，字号增大。':'쉬운 화면을 켰습니다. 글자가 커집니다.') : (cur==='en'?'Easy view off.':cur==='zh'?'已关闭大字模式。':'쉬운 화면을 껐습니다.'));
+});
+themeBtn.addEventListener('click', () => {
+  const dark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', dark ? 'light' : 'dark');
+  themeBtn.setAttribute('aria-pressed', !dark);
+  themeBtn.textContent = dark ? t('tools.dark') : t('tools.light');
+});
+function announce(msg){ let l=document.getElementById('sr'); if(!l){l=document.createElement('div');l.id='sr';l.style.cssText='position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden';document.body.appendChild(l);} l.textContent=msg; }
+
+/* ================= 포즈 분석 (결정론적 게이트) ================= */
+const GATE = { squat:{minKnee:90,maxTrunkLean:30,maxSymDiff:12}, knee_ext:{minKnee:120,maxTrunkLean:30,maxSymDiff:12} };
+function angleAt(a,b,c){ const ab={x:a.x-b.x,y:a.y-b.y}, cb={x:c.x-b.x,y:c.y-b.y}; const dot=ab.x*cb.x+ab.y*cb.y; const m=Math.hypot(ab.x,ab.y)*Math.hypot(cb.x,cb.y); if(!m) return 180; return Math.acos(Math.min(1,Math.max(-1,dot/m)))*180/Math.PI; }
+function trunkLeanDeg(shoulder,hip){ const dx=shoulder.x-hip.x, dy=shoulder.y-hip.y; if(Math.abs(dy)<1e-6) return 90; return Math.atan2(Math.abs(dx),Math.abs(dy))*180/Math.PI; }
+function analyze(lm,exercise){
+  const L={hip:23,knee:25,ankle:27,shoulder:11}, R={hip:24,knee:26,ankle:28,shoulder:12};
+  const lowVis=[23,24,25,26,27,28,11,12].some(i=>lm[i]&&(lm[i].visibility ?? 1)<0.4);
+  if(lowVis) return {knee:null,trunk:null,sym:null,issues:[{type:'warn',key:'demo.fb.lowQual',rule:'qual'}]};
+  const lk=angleAt(lm[L.hip],lm[L.knee],lm[L.ankle]), rk=angleAt(lm[R.hip],lm[R.knee],lm[R.ankle]);
+  const knee=Math.min(lk,rk), sym=Math.abs(lk-rk);
+  const trunk=Math.max(trunkLeanDeg(lm[L.shoulder],lm[L.hip]), trunkLeanDeg(lm[R.shoulder],lm[R.hip]));
+  const lim=GATE[exercise], issues=[];
+  if(knee<lim.minKnee) issues.push({type:'block',key:'demo.fb.blockKnee',vars:{n:lim.minKnee},rule:'knee'});
+  if(trunk>lim.maxTrunkLean) issues.push({type:'warn',key:'demo.fb.warnTrunk',rule:'trunk'});
+  if(sym>lim.maxSymDiff) issues.push({type:'warn',key:'demo.fb.warnSym',rule:'sym'});
+  return {knee,trunk,sym,issues};
+}
+
+/* ================= 데모 상태 ================= */
+const video=document.getElementById('webcam'), canvas=document.getElementById('overlay'), ctx=canvas.getContext('2d');
+const feedback=document.getElementById('feedback'), mReps=document.getElementById('mReps'), mKnee=document.getElementById('mKnee'), mSym=document.getElementById('mSym');
+const camBtn=document.getElementById('camBtn'), simBtn=document.getElementById('simBtn'), exSquat=document.getElementById('exSquat'), exKnee=document.getElementById('exKnee');
+const gateDot=document.getElementById('gateDot');
+let exercise='squat', stream=null, poseLib=null, poseLandmarker=null, running=false, simRunning=false, reps=0, inSquat=false;
+
+function setFeedback(cls,key,vars){ feedback.className='feedback '+cls; feedback.textContent=t(key,vars); }
+function clearRules(){ ['rKnee','rTrunk','rSym','rQual'].forEach(id=>{const li=document.getElementById(id);li.classList.remove('fire','ok');}); }
+function applyIssues(issues){
+  clearRules();
+  ['rKnee','rTrunk','rSym','rQual'].forEach(id=>document.getElementById(id).classList.add('ok'));
+  issues.forEach(it=>{ const el=document.getElementById('r'+it.rule[0].toUpperCase()+it.rule.slice(1)); if(el){el.classList.remove('ok');el.classList.add('fire');} });
+  gateDot.className='dot '+(issues.some(i=>i.type==='block')?'block':issues.length?'warn':'');
+}
+function updateMetrics(knee,sym){ mKnee.textContent = knee?Math.round(knee):'—'; mSym.textContent = sym!=null?Math.round(sym)+'°':'—'; }
+function processKnee(knee,sym,issues){
+  updateMetrics(knee,sym);
+  if(exercise==='squat'&&knee){ if(!inSquat&&knee<118)inSquat=true; else if(inSquat&&knee>152){inSquat=false;reps++;mReps.textContent=reps;} }
+  if(issues.length){ const worst=issues.find(i=>i.type==='block')||issues[0]; setFeedback(worst.type==='block'?'block':'warn',worst.key,worst.vars); }
+  else if(knee){ setFeedback('ok','demo.fb.good'); }
+  applyIssues(issues);
+}
+function updateDemoStrings(){
+  camBtn.textContent = running ? t('demo.camStop') : t('demo.camStart');
+  if(simRunning) simBtn.textContent = t('demo.simStop'); else simBtn.textContent = t('demo.simStart');
+}
+function setExercise(ex){
+  exercise=ex;
+  exSquat.classList.toggle('on',ex==='squat'); exKnee.classList.toggle('on',ex==='knee_ext');
+  exSquat.setAttribute('aria-pressed',ex==='squat'); exKnee.setAttribute('aria-pressed',ex==='knee_ext');
+  setFeedback('idle', ex==='knee_ext' ? 'demo.fb.knee' : 'demo.fb.squat');
+  reps=0;inSquat=false;mReps.textContent='0';
+}
+exSquat.addEventListener('click',()=>setExercise('squat'));
+exKnee.addEventListener('click',()=>setExercise('knee_ext'));
+function sizeCanvas(){ canvas.width=video.videoWidth||canvas.clientWidth||640; canvas.height=video.videoHeight||canvas.clientHeight||400; }
+
+const BONES=[[11,12],[11,23],[12,24],[23,24],[23,25],[24,26],[25,27],[26,28]];
+function drawSkeleton(lm){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const w=canvas.width,h=canvas.height;
+  ctx.strokeStyle='rgba(126,214,225,.95)';ctx.lineWidth=4;ctx.lineCap='round';ctx.lineJoin='round';
+  for(const[a,b]of BONES){const p1=lm[a],p2=lm[b];if(!p1||!p2)continue;ctx.beginPath();ctx.moveTo((1-p1.x)*w,p1.y*h);ctx.lineTo((1-p2.x)*w,p2.y*h);ctx.stroke();}
+  const joints=[23,24,25,26,27,28,11,12];
+  for(const j of joints){const p=lm[j];if(!p)continue;ctx.beginPath();ctx.arc((1-p.x)*w,p.y*h,6,0,Math.PI*2);ctx.fillStyle=(j===25||j===26)?'#FFD98A':'#7ED6E1';ctx.fill();}
+}
+
+async function loadPose(){
+  if(poseLandmarker) return poseLandmarker;
+  const mod=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14');
+  poseLib=mod;
+  const vision=await mod.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+  poseLandmarker=await mod.PoseLandmarker.createFromOptions(vision,{
+    baseOptions:{ modelAssetPath:'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task', delegate:'GPU' },
+    runningMode:'VIDEO', numPoses:1, minPoseDetectionConfidence:0.5, minPosePresenceConfidence:0.5, minTrackingConfidence:0.5
+  });
+  return poseLandmarker;
+}
+
+async function startCamera(){
+  stopSim();
+  setFeedback('idle','demo.fb.starting');
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},facingMode:'user'},audio:false});
+    video.srcObject=stream; await video.play(); await loadPose(); sizeCanvas(); running=true;
+    updateDemoStrings(); setFeedback('ok','demo.fb.squat'); requestAnimationFrame(loop);
+  }catch(err){
+    running=false;
+    const key = err&&err.name==='NotAllowedError' ? 'demo.fb.denied' : (err&&err.name==='NotFoundError' ? 'demo.fb.notfound' : 'demo.fb.fail');
+    setFeedback('warn',key); video.srcObject=null; updateDemoStrings();
+  }
+}
+function stopCamera(){
+  running=false; if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} video.srcObject=null;
+  ctx.clearRect(0,0,canvas.width,canvas.height); updateDemoStrings();
+}
+let lastTs=0;
+function loop(ts){
+  if(!running) return;
+  if(ts-lastTs>33){
+    lastTs=ts;
+    try{
+      const res=poseLandmarker.detectForVideo(video,performance.now()); sizeCanvas();
+      if(res.landmarks&&res.landmarks.length){ const lm=res.landmarks[0]; drawSkeleton(lm); const r=analyze(lm,exercise); processKnee(r.knee,r.sym,r.issues); }
+      else { clearRules(); updateMetrics(null,null); setFeedback('idle','demo.fb.nobody'); }
+    }catch(e){}
+  }
+  requestAnimationFrame(loop);
+}
+camBtn.addEventListener('click',()=>running?stopCamera():startCamera());
+
+/* 샘플 시연 */
+function stopSim(){ simRunning=false; }
+simBtn.addEventListener('click',()=>{
+  if(simRunning){ stopSim(); updateDemoStrings(); return; }
+  stopCamera(); simRunning=true; updateDemoStrings();
+  reps=0;inSquat=false;mReps.textContent='0'; setFeedback('ok','demo.fb.simRun');
+  const t0=performance.now();
+  function simLoop(now){
+    if(!simRunning) return;
+    const t=(now-t0)/1000;
+    const knee=135-40*Math.sin(t*Math.PI/2);
+    const trunk=8+14*Math.max(0,Math.sin(t*Math.PI/2-Math.PI/2));
+    const sym=4+2*Math.sin(t*3);
+    const lim=GATE[exercise], issues=[];
+    if(knee<lim.minKnee) issues.push({type:'block',key:'demo.fb.blockKnee',vars:{n:lim.minKnee},rule:'knee'});
+    if(trunk>lim.maxTrunkLean) issues.push({type:'warn',key:'demo.fb.warnTrunk',rule:'trunk'});
+    if(sym>lim.maxSymDiff) issues.push({type:'warn',key:'demo.fb.warnSymSim',rule:'sym'});
+    processKnee(knee,sym,issues);
+    drawSimFigure(knee,trunk);
+    requestAnimationFrame(simLoop);
+  }
+  requestAnimationFrame(simLoop);
+});
+function drawSimFigure(kneeDeg,trunkDeg){
+  const w=canvas.width||640,h=canvas.height||400;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='rgba(126,214,225,.95)';ctx.lineWidth=5;ctx.lineCap='round';
+  const hip={x:w*0.5,y:h*0.5};
+  const sh={x:hip.x+Math.sin(trunkDeg*Math.PI/180)*h*0.18,y:hip.y-Math.cos(trunkDeg*Math.PI/180)*h*0.18};
+  const a=kneeDeg*Math.PI/180, thighLen=h*0.22, shinLen=h*0.22;
+  const knee={x:hip.x+Math.sin(a)*thighLen,y:hip.y+Math.cos(a)*thighLen};
+  const ankle={x:knee.x,y:knee.y+shinLen};
+  const draw=(p,q)=>{ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();};
+  draw({x:hip.x,y:hip.y-10},sh);draw(sh,hip);draw(hip,knee);draw(knee,ankle);
+  [sh,hip,knee,ankle].forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fillStyle='#7ED6E1';ctx.fill();});
+}
+
+sizeCanvas();
+applyLang();
+</script>
+</body>
+</html>
